@@ -1764,7 +1764,7 @@
     </div>
     <div style="display:flex;align-items:center;gap:14px;">
       <span id="dashUserName" style="color:rgba(255,255,255,0.9);font-size:13px;font-weight:600;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-      <div onclick="openMenu()" style="cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:4px;">
+      <div onclick="openReportePanel()" style="cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:4px;">
         <span style="display:block;width:24px;height:2px;background:#fff;border-radius:2px;"></span>
         <span style="display:block;width:24px;height:2px;background:#fff;border-radius:2px;"></span>
         <span style="display:block;width:24px;height:2px;background:#fff;border-radius:2px;"></span>
@@ -2055,6 +2055,124 @@
   </div>
 
 </div>
+
+<!-- ========== REPORTE PANEL (≡ del dashboard) ========== -->
+<!-- Loader de transición púrpura -->
+<div id="rpLoader" style="display:none;position:fixed;inset:0;z-index:370;background:#6B1FA8;flex-direction:column;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:24px;width:90px;height:90px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
+    <span style="font-size:30px;font-weight:900;color:#6B1FA8;font-family:sans-serif;">mi</span>
+  </div>
+  <p id="rpLoaderTip" style="color:rgba(255,255,255,0.92);font-size:15px;line-height:1.65;text-align:center;max-width:270px;padding:0 24px;"></p>
+</div>
+
+<!-- Panel de contenido de sección -->
+<div id="rpSectionPanel" style="display:none;position:fixed;inset:0;z-index:362;background:#F5F5F8;overflow-y:auto;padding-bottom:40px;">
+  <div id="rpSectionContent"></div>
+</div>
+
+<!-- Panel principal: menú acordeón -->
+<div id="reportePanel" style="display:none;position:fixed;inset:0;z-index:360;background:#1A0A3B;overflow-y:auto;padding-bottom:40px;">
+
+  <!-- Header -->
+  <header style="background:#1A0A3B;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="background:#fff;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#6B1FA8;font-size:15px;font-family:sans-serif;">mi</div>
+      <span style="color:#fff;font-weight:700;font-size:17px;letter-spacing:-0.3px;">datacrédito</span>
+    </div>
+    <button onclick="closeReportePanel()" style="background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:4px;">
+      <span style="display:block;width:24px;height:2px;background:#fff;border-radius:2px;"></span>
+      <span style="display:block;width:24px;height:2px;background:#fff;border-radius:2px;"></span>
+      <span style="display:block;width:24px;height:2px;background:#fff;border-radius:2px;"></span>
+    </button>
+  </header>
+
+  <!-- Saludo usuario -->
+  <div style="padding:14px 16px 4px;">
+    <div style="border:1.5px solid rgba(255,255,255,0.22);border-radius:10px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span id="rpNombreDisplay" style="color:#fff;font-weight:600;font-size:15px;">Hola, Usuario ▼</span>
+    </div>
+  </div>
+
+  <!-- Título sección 1 -->
+  <div style="padding:20px 20px 14px;">
+    <p style="color:#8B5CF6;font-size:15px;font-weight:600;line-height:1.5;margin:0;">Herramientas para tomar el control de tu vida financiera:</p>
+  </div>
+
+  <!-- Ítems acordeón -->
+  <div style="padding:0 14px;display:flex;flex-direction:column;gap:6px;">
+
+    <div id="rpBtnHistoria" onclick="switchReporteSection('historia')" style="background:#4A1080;border-radius:8px;padding:16px;color:#fff;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border-left:4px solid #FFB800;">
+      <span style="font-weight:700;font-size:15px;">Historia de Crédito</span>
+      <span style="color:rgba(255,255,255,0.6);font-size:20px;">›</span>
+    </div>
+
+    <div onclick="switchReporteSection('creditos')" style="background:#2D1B5E;border-radius:8px;padding:16px;color:#fff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:15px;">Créditos a mi medida</span>
+      <span style="color:rgba(255,255,255,0.4);font-size:20px;">›</span>
+    </div>
+
+    <div onclick="switchReporteSection('deudas_rp')" style="background:#2D1B5E;border-radius:8px;padding:16px;color:#fff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:15px;">Negocia tus deudas</span>
+      <span style="color:rgba(255,255,255,0.4);font-size:20px;">›</span>
+    </div>
+
+    <div onclick="switchReporteSection('huellas')" style="background:#2D1B5E;border-radius:8px;padding:16px;color:#fff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:15px;">Huellas de Consulta</span>
+      <span style="color:rgba(255,255,255,0.4);font-size:20px;">›</span>
+    </div>
+
+    <!-- Items bloqueados (premium) -->
+    <div style="height:6px;"></div>
+    <div style="background:#2D1B5E;border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:rgba(255,255,255,0.35);font-size:14px;">Puntaje de Crédito</span>
+      <svg width="17" height="21" viewBox="0 0 17 21" fill="none"><rect x="1" y="8" width="15" height="12" rx="3" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><path d="M4.5 8V5.5a4 4 0 0 1 8 0V8" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/></svg>
+    </div>
+    <div style="background:#2D1B5E;border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:rgba(255,255,255,0.35);font-size:14px;">Diagnóstico</span>
+      <svg width="17" height="21" viewBox="0 0 17 21" fill="none"><rect x="1" y="8" width="15" height="12" rx="3" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><path d="M4.5 8V5.5a4 4 0 0 1 8 0V8" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/></svg>
+    </div>
+    <div style="background:#2D1B5E;border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:rgba(255,255,255,0.35);font-size:14px;">Simulador de puntaje</span>
+      <svg width="17" height="21" viewBox="0 0 17 21" fill="none"><rect x="1" y="8" width="15" height="12" rx="3" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><path d="M4.5 8V5.5a4 4 0 0 1 8 0V8" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/></svg>
+    </div>
+    <div style="background:#2D1B5E;border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:rgba(255,255,255,0.35);font-size:14px;">Consolidado de Deuda</span>
+      <svg width="17" height="21" viewBox="0 0 17 21" fill="none"><rect x="1" y="8" width="15" height="12" rx="3" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><path d="M4.5 8V5.5a4 4 0 0 1 8 0V8" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/></svg>
+    </div>
+    <div style="background:#2D1B5E;border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:rgba(255,255,255,0.35);font-size:14px;">Simulador de Crédito</span>
+      <svg width="17" height="21" viewBox="0 0 17 21" fill="none"><rect x="1" y="8" width="15" height="12" rx="3" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><path d="M4.5 8V5.5a4 4 0 0 1 8 0V8" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/></svg>
+    </div>
+    <div style="background:#2D1B5E;border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:rgba(255,255,255,0.35);font-size:14px;">Asesoría financiera</span>
+      <svg width="17" height="21" viewBox="0 0 17 21" fill="none"><rect x="1" y="8" width="15" height="12" rx="3" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><path d="M4.5 8V5.5a4 4 0 0 1 8 0V8" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/></svg>
+    </div>
+    <div style="background:#2D1B5E;border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:rgba(255,255,255,0.35);font-size:14px;">Asesoría tributaria</span>
+      <svg width="17" height="21" viewBox="0 0 17 21" fill="none"><rect x="1" y="8" width="15" height="12" rx="3" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><path d="M4.5 8V5.5a4 4 0 0 1 8 0V8" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/></svg>
+    </div>
+  </div>
+
+  <!-- Título sección 2 -->
+  <div style="padding:24px 20px 14px;">
+    <p style="color:#8B5CF6;font-size:15px;font-weight:600;line-height:1.5;margin:0;">Herramientas para protegerte contra el fraude y robo de identidad:</p>
+  </div>
+  <div style="padding:0 14px;display:flex;flex-direction:column;gap:6px;padding-bottom:20px;">
+    <div onclick="closeReportePanel();dashTab('antifraude');" style="background:#2D1B5E;border-radius:8px;padding:16px;color:#fff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:15px;">Monitoreo de alertas</span>
+      <span style="color:rgba(255,255,255,0.4);font-size:20px;">›</span>
+    </div>
+    <div style="background:#2D1B5E;border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:rgba(255,255,255,0.35);font-size:14px;">Verificación de email</span>
+      <svg width="17" height="21" viewBox="0 0 17 21" fill="none"><rect x="1" y="8" width="15" height="12" rx="3" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><path d="M4.5 8V5.5a4 4 0 0 1 8 0V8" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/></svg>
+    </div>
+    <div style="background:#2D1B5E;border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:rgba(255,255,255,0.35);font-size:14px;">Bloqueo de consultas</span>
+      <svg width="17" height="21" viewBox="0 0 17 21" fill="none"><rect x="1" y="8" width="15" height="12" rx="3" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><path d="M4.5 8V5.5a4 4 0 0 1 8 0V8" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/></svg>
+    </div>
+  </div>
+
+</div><!-- /reportePanel -->
 
 <!-- ========== ADMIN PANEL ========== -->
 <div id="adminPinModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
@@ -2784,6 +2902,369 @@ async function adminAddUser() {
   document.getElementById('newNombre').value = '';
   renderAdminPanel();
   showToast('✅ Usuario autorizado correctamente');
+}
+
+// ============================================================
+// REPORTE PANEL (≡ del dashboard)
+// ============================================================
+const RP_TIPS = [
+  'Se considera que una persona tiene un portafolio sólido y diverso cuando tiene 4 o más obligaciones abiertas y al día.',
+  'Una buena historia crediticia puede abrirte puertas a mejores tasas de interés y mayores montos de crédito.',
+  'Revisar tu historial periódicamente te ayuda a detectar inconsistencias y proteger tu identidad.',
+  'Los reportes positivos se generan cuando estás al día. Los negativos cuando tienes cuotas en mora.',
+  'Tus huellas de consulta no afectan negativamente tu puntaje crediticio.'
+];
+
+function openReportePanel() {
+  const cedula = getSession();
+  if (!cedula) return;
+  // Nombre del usuario
+  const rawName = document.getElementById('dashUserName').textContent || '';
+  const nombre = rawName.replace(/^Bienvenido[,\s]*/i,'').trim() || 'Usuario';
+  document.getElementById('rpNombreDisplay').textContent = 'Hola, ' + nombre + ' ▼';
+  document.getElementById('reportePanel').style.display = 'block';
+  document.getElementById('rpSectionPanel').style.display = 'none';
+  document.getElementById('rpLoader').style.display = 'none';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeReportePanel() {
+  document.getElementById('reportePanel').style.display = 'none';
+  document.getElementById('rpSectionPanel').style.display = 'none';
+  document.getElementById('rpLoader').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function backToReporteMenu() {
+  document.getElementById('rpSectionPanel').style.display = 'none';
+  document.getElementById('reportePanel').scrollTop = 0;
+}
+
+async function switchReporteSection(section) {
+  // Mostrar loader con tip aleatorio
+  const tip = RP_TIPS[Math.floor(Math.random() * RP_TIPS.length)];
+  document.getElementById('rpLoaderTip').textContent = tip;
+  const loader = document.getElementById('rpLoader');
+  loader.style.display = 'flex';
+
+  // Cargar datos del usuario
+  const cedula = getSession();
+  const user = await getOrCreateUserData(cedula);
+  const nombre = user.nombre || '';
+  const abiertas = user.cuentasAbiertas || [];
+  const cerradas = user.cuentasCerradas || [];
+
+  setTimeout(() => {
+    loader.style.display = 'none';
+    const content = document.getElementById('rpSectionContent');
+    if (section === 'historia')     content.innerHTML = buildHistoriaHTML(nombre, abiertas, cerradas);
+    else if (section === 'creditos') content.innerHTML = buildCreditosMedidaHTML(abiertas, cerradas);
+    else if (section === 'huellas')  content.innerHTML = buildHuellasHTML(abiertas);
+    else if (section === 'deudas_rp') content.innerHTML = buildDeudasRpHTML(user, abiertas, cerradas);
+    const panel = document.getElementById('rpSectionPanel');
+    panel.style.display = 'block';
+    panel.scrollTop = 0;
+  }, 1500);
+}
+
+// ─── Cabecera compartida de secciones ───────────────────────
+function rpSectionHeader(titulo) {
+  return `<header style="background:#6B1FA8;padding:14px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:10;">
+    <button onclick="backToReporteMenu()" style="background:none;border:none;color:#fff;font-size:28px;cursor:pointer;padding:0;line-height:1;">‹</button>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="background:#fff;border-radius:9px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#6B1FA8;font-size:13px;font-family:sans-serif;">mi</div>
+      <span style="color:#fff;font-weight:700;font-size:16px;">datacrédito</span>
+    </div>
+  </header>`;
+}
+
+// ─── Fila de cuenta ─────────────────────────────────────────
+function rpCuentaRow(icon, count, label, sub, borderColor) {
+  return `<div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid #F0F0F0;">
+    <div style="background:#F5F0FB;border-radius:10px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      ${icon}
+    </div>
+    <div style="flex:1;">
+      <div style="font-weight:700;font-size:14px;color:#1A1A1A;">${count} ${label}</div>
+      <div style="font-size:12px;color:#888;margin-top:2px;">${sub}</div>
+    </div>
+    <span style="color:${borderColor};font-size:22px;">›</span>
+  </div>`;
+}
+
+// ─── HTML: Historia de Crédito ───────────────────────────────
+function buildHistoriaHTML(nombre, abiertas, cerradas) {
+  const svgFolder = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9C27B0" stroke-width="2"><path d="M3 3h18v4H3zM3 11h18v2H3zM3 17h18v4H3z"/></svg>`;
+  const svgBell   = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9C27B0" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`;
+  const svgAlert  = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9C27B0" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+
+  return rpSectionHeader('Historia de Crédito') + `
+  <div style="background:#6B1FA8;padding:0 16px 24px;display:flex;gap:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;padding-top:12px;">
+      <div style="background:rgba(255,255,255,0.15);border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;">🤝</div>
+      <span style="color:rgba(255,255,255,0.85);font-size:11px;text-align:center;">Verifica</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;padding-top:12px;">
+      <div style="background:rgba(255,255,255,0.15);border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#6B1FA8;font-size:11px;font-family:sans-serif;">mi</div>
+      </div>
+      <span style="color:rgba(255,255,255,0.85);font-size:11px;text-align:center;">Midatacrédito</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;padding-top:12px;">
+      <div style="background:rgba(255,255,255,0.15);border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;position:relative;">
+        <div style="background:#fff;border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#6B1FA8;font-size:9px;font-family:sans-serif;">mi<br>TOP</div>
+        <span style="position:absolute;top:-4px;right:-4px;font-size:14px;">👑</span>
+      </div>
+      <span style="color:rgba(255,255,255,0.85);font-size:11px;text-align:center;">Plan más top</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;padding-top:12px;">
+      <div style="background:rgba(255,255,255,0.15);border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;">🛡️</div>
+      <span style="color:rgba(255,255,255,0.85);font-size:11px;text-align:center;">A seg...</span>
+    </div>
+  </div>
+
+  <!-- Gauge circular "?" -->
+  <div style="background:#F5F5F8;padding:28px 16px 8px;display:flex;flex-direction:column;align-items:center;">
+    <div style="position:relative;width:180px;height:180px;">
+      <svg width="180" height="180" viewBox="0 0 180 180">
+        <circle cx="90" cy="90" r="78" fill="none" stroke="#E0D0F0" stroke-width="12"/>
+        <circle cx="90" cy="90" r="78" fill="#2D1B5E" stroke="#2D1B5E" stroke-width="0"/>
+        <circle cx="90" cy="90" r="68" fill="#2D1B5E"/>
+        <!-- arco multicolor -->
+        <path d="M 12 90 A 78 78 0 0 1 168 90" fill="none" stroke="url(#arcGrad)" stroke-width="12" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#e53935"/>
+            <stop offset="33%" stop-color="#FF9800"/>
+            <stop offset="66%" stop-color="#FDD835"/>
+            <stop offset="100%" stop-color="#66BB6A"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+        <span style="font-size:58px;font-weight:900;color:#fff;line-height:1;">?</span>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;width:170px;margin-top:4px;">
+      <span style="font-size:12px;color:#888;">150</span>
+      <span style="font-size:12px;color:#888;">950</span>
+    </div>
+  </div>
+
+  <!-- Texto bienvenida -->
+  <div style="padding:20px 20px 4px;">
+    <h2 style="font-size:18px;font-weight:700;color:#1A1A1A;margin-bottom:10px;line-height:1.3;">${nombre ? nombre + ', bienvenido' : 'Bienvenido'} a tu historia de Crédito</h2>
+    <p style="font-size:13px;color:#444;line-height:1.65;margin-bottom:8px;">¿Te gustaría conocer tu <strong>PUNTAJE</strong> en <strong>DATACRÉDITO</strong>? Suscríbete a nuestros planes y descúbrelo hoy.</p>
+    <p style="font-size:12px;color:#8B5CF6;line-height:1.6;">Además de consultar tu puntaje ilimitadamente, podrás tener un diagnóstico de tu perfil crediticio, descargar tu historia de crédito en PDF y más.</p>
+    <button style="margin-top:16px;width:100%;background:#FF8C00;color:#fff;border:none;border-radius:30px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+      Conocer MI PUNTAJE <span style="font-size:18px;">›</span>
+    </button>
+  </div>
+
+  <!-- Card historia -->
+  <div style="background:#fff;border-radius:16px;margin:20px 16px 16px;padding:20px;">
+    <h3 style="font-size:16px;font-weight:700;color:#6B1FA8;margin-bottom:14px;">Historia de crédito</h3>
+    <p style="font-size:13px;color:#444;line-height:1.65;margin-bottom:12px;">Tu historia de crédito se construye con los reportes <strong>positivos</strong> y <strong>negativos</strong> realizados por las entidades ante Datacrédito.</p>
+    <p style="font-size:13px;color:#444;line-height:1.65;margin-bottom:16px;">Según el <strong>Artículo 14</strong> de la <strong>Ley 1266</strong> de 2008, los reportes son positivos cuando estas al día en tus obligaciones y son negativos cuando te encuentras en mora en tus cuotas u obligaciones.</p>
+    ${rpCuentaRow(svgFolder, abiertas.length, 'Cuentas abiertas', 'Tus productos activos', '#9C27B0')}
+    ${rpCuentaRow(svgFolder, cerradas.length, 'Cuentas cerradas', 'Productos cerrados o cancelados', '#9C27B0')}
+    ${rpCuentaRow(svgAlert, '0', 'Reclamaciones', 'Inconformidades en tus reportes', '#9C27B0')}
+    ${rpCuentaRow(svgBell, '0', 'Alertas', 'Prevención del fraude', '#9C27B0')}
+  </div>
+
+  <!-- Card empresa -->
+  <div style="background:#fff;border-radius:16px;margin:0 16px 24px;padding:20px;display:flex;gap:14px;align-items:center;">
+    <div style="flex:1;">
+      <p style="font-size:15px;color:#333;line-height:1.5;margin:0;">Si eres una <strong>empresa</strong>, recuerda que también puedes consultar gratis tu historia de crédito <span style="background:#E91E8C;color:#fff;font-weight:700;padding:2px 7px;border-radius:5px;font-size:13px;">AQUÍ</span></p>
+    </div>
+    <div style="font-size:11px;color:#9C27B0;font-weight:700;text-align:center;flex-shrink:0;white-space:nowrap;">·datacrédito<br>experian.</div>
+  </div>`;
+}
+
+// ─── HTML: Créditos a mi medida ──────────────────────────────
+function buildCreditosMedidaHTML(abiertas, cerradas) {
+  const svgFolder = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9C27B0" stroke-width="2"><path d="M3 3h18v4H3zM3 11h18v2H3zM3 17h18v4H3z"/></svg>`;
+  const svgBell   = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9C27B0" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`;
+  const svgAlert  = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9C27B0" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+
+  return rpSectionHeader('Créditos a mi medida') + `
+  <!-- Banner perfil crediticio -->
+  <div style="background:linear-gradient(130deg,#7B2DB5,#9C27B0);margin:16px;border-radius:16px;padding:20px;overflow:hidden;position:relative;">
+    <div style="position:absolute;right:-20px;top:-20px;width:120px;height:120px;background:rgba(255,255,255,0.07);border-radius:50%;"></div>
+    <div style="position:absolute;right:10px;top:10px;font-size:60px;opacity:0.3;">🎨</div>
+    <div style="color:rgba(255,255,255,0.9);font-size:14px;margin-bottom:4px;position:relative;">¿Quieres saber cómo mejorar tu</div>
+    <div style="color:#FFB800;font-size:20px;font-weight:900;margin-bottom:10px;line-height:1.2;position:relative;">PERFIL<br>CREDITICIO?</div>
+    <p style="color:rgba(255,255,255,0.85);font-size:12px;line-height:1.55;margin-bottom:16px;position:relative;">Consulta tu <strong style="color:#FFB800;">PUNTAJE EN DATACRÉDITO</strong> de forma ilimitada, recibe diagnóstico de tu historial y mucho más para saber cómo mejorar tu perfil crediticio.</p>
+    <button style="background:#FFB800;color:#1A1A1A;border:none;border-radius:30px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;position:relative;">Comprar Plan</button>
+  </div>
+
+  <!-- Estado de productos -->
+  <div style="background:#fff;border-radius:16px;margin:0 16px 16px;padding:20px;">
+    <h3 style="font-size:17px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">Conoce el estado de</h3>
+    <h3 style="font-size:17px;font-weight:700;color:#1A1A1A;margin-bottom:16px;">tus productos.</h3>
+    ${rpCuentaRow(svgFolder, abiertas.length, 'Cuentas abiertas', 'Tus productos activos', '#9C27B0')}
+    ${rpCuentaRow(svgFolder, cerradas.length, 'Cuentas cerradas', 'Productos cerrados o cancelados', '#9C27B0')}
+    ${rpCuentaRow(svgAlert, '0', 'Reclamaciones', 'Inconformidades en tus reportes', '#E91E8C')}
+    ${rpCuentaRow(svgBell, '0', 'Alertas', 'Prevención del fraude', '#E91E8C')}
+  </div>
+
+  <!-- Carrusel créditos -->
+  <div style="background:#fff;border-radius:16px;margin:0 16px 16px;padding:20px;">
+    <h3 style="font-size:17px;font-weight:700;color:#1A1A1A;margin-bottom:16px;">Créditos para ti:</h3>
+
+    <!-- Tarjeta oferta actual -->
+    <div style="border:2px solid #2D1B5E;border-radius:12px;overflow:hidden;margin-bottom:12px;">
+      <!-- Tab -->
+      <div style="background:#F5F0FF;padding:10px 14px;border-bottom:2px solid #2D1B5E;display:flex;align-items:center;gap:8px;">
+        <span style="font-size:13px;font-weight:600;color:#2D1B5E;">Credito365 — Crédito de Libre Inversión</span>
+      </div>
+      <!-- Contenido -->
+      <div style="padding:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="background:#1A1A1A;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;">⭐ Oferta Patrocinada</span>
+          </div>
+          <button style="background:#E91E8C;color:#fff;border:none;border-radius:20px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;">Aplica ahora</button>
+        </div>
+        <div style="font-size:16px;font-weight:700;color:#2D1B5E;margin-bottom:16px;font-style:italic;">Crédito 365</div>
+        <div style="height:1px;background:#F0F0F0;margin-bottom:14px;"></div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:12px;color:#888;margin-bottom:2px;">Monto</div>
+          <div style="font-size:15px;font-weight:700;color:#1A1A1A;">Hasta $1.500.000</div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#888;margin-bottom:2px;">Tasa de Interés</div>
+          <div style="font-size:15px;font-weight:700;color:#1A1A1A;">25,99% E.A</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dots de paginación -->
+    <div style="display:flex;justify-content:center;gap:6px;margin-bottom:16px;">
+      <span style="width:8px;height:8px;border-radius:50%;background:#2D1B5E;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#D0C0E8;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#D0C0E8;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#D0C0E8;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#D0C0E8;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#D0C0E8;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#D0C0E8;display:inline-block;"></span>
+    </div>
+
+    <!-- Botón ver más -->
+    <button style="display:block;width:100%;background:transparent;color:#E91E8C;border:2px solid #E91E8C;border-radius:30px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;">Ver ofertas a mi medida</button>
+  </div>`;
+}
+
+// ─── HTML: Huellas de Consulta ───────────────────────────────
+function buildHuellasHTML(abiertas) {
+  // Simula 2 huellas de consulta
+  const hoy = new Date();
+  const mes1 = hoy.toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'}).toUpperCase();
+  const mes2 = '01 JUNIO 2026';
+  const entidad1 = 'CIUDADANO';
+  const entidad2 = abiertas.length ? abiertas[0].entidad.toUpperCase() : 'ADELANTE SOLUCIONES';
+
+  return rpSectionHeader('Huellas de Consulta') + `
+  <!-- Encabezado sección -->
+  <div style="padding:24px 20px 16px;display:flex;align-items:flex-start;gap:14px;">
+    <div style="font-size:40px;">🔍</div>
+    <h2 style="font-size:18px;font-weight:700;color:#1A1A1A;line-height:1.35;margin:0;">Huellas de consulta a historia de crédito.</h2>
+  </div>
+
+  <!-- Card huellas -->
+  <div style="background:#fff;border-radius:16px;margin:0 16px 16px;padding:20px;">
+    <div style="font-weight:700;font-size:14px;color:#6B1FA8;margin-bottom:4px;">Tus huellas de consulta</div>
+    <div style="font-size:12px;color:#888;margin-bottom:18px;">correspondientes a los últimos 6 meses</div>
+
+    <!-- Fila 1 -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #F0F0F0;">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#888;letter-spacing:0.5px;">${entidad1}</div>
+        <div style="font-size:12px;color:#AAA;margin-top:2px;">${mes1}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B1FA8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span style="background:#E0D4F7;color:#6B1FA8;border-radius:20px;padding:4px 14px;font-size:13px;font-weight:700;">2</span>
+      </div>
+    </div>
+
+    <!-- Fila 2 -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#888;letter-spacing:0.5px;">${entidad2}</div>
+        <div style="font-size:12px;color:#AAA;margin-top:2px;">${mes2}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B1FA8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span style="background:#E0D4F7;color:#6B1FA8;border-radius:20px;padding:4px 14px;font-size:13px;font-weight:700;">1</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nota -->
+  <div style="margin:0 16px 20px;display:flex;align-items:flex-start;gap:10px;">
+    <span style="font-size:18px;flex-shrink:0;margin-top:1px;">⚠️</span>
+    <p style="font-size:12px;color:#555;line-height:1.6;margin:0;"><strong>NOTA:</strong> La fecha y el contador, corresponden a la fecha de la última consulta y la cantidad de consultas realizadas respectivamente.</p>
+  </div>
+
+  <!-- ¿Qué son? -->
+  <div style="padding:0 20px 16px;">
+    <h3 style="font-size:17px;font-weight:700;color:#1A1A1A;margin-bottom:10px;">¿Qué son las huellas de consulta?</h3>
+    <p style="font-size:13px;color:#444;line-height:1.65;margin:0;">Una huella de consulta es un registro que se guarda en tu historia crediticia siempre que hay una consulta a la Historia de Crédito.</p>
+  </div>
+
+  <!-- ¿Afectan mi puntaje? -->
+  <div style="padding:0 20px 16px;">
+    <h3 style="font-size:17px;font-weight:700;color:#1A1A1A;margin-bottom:10px;">¿Afectan mi puntaje?</h3>
+    <p style="font-size:13px;color:#444;line-height:1.65;margin:0;"><strong>NO</strong>, estos registros <strong>no afectan negativamente el puntaje</strong>.</p>
+  </div>
+
+  <!-- ¿Cuánto tiempo duran? -->
+  <div style="padding:0 20px 20px;">
+    <h3 style="font-size:17px;font-weight:700;color:#1A1A1A;margin-bottom:10px;">¿Cuánto tiempo duran?</h3>
+    <p style="font-size:13px;color:#444;line-height:1.65;margin:0;">Suelen tener una duración de seis meses a partir de que se genera la consulta.</p>
+  </div>
+
+  <!-- Separator -->
+  <div style="height:1px;background:#E8E8E8;margin:0 20px 20px;"></div>
+
+  <!-- Contacto -->
+  <div style="margin:0 20px 32px;display:flex;align-items:flex-start;gap:12px;">
+    <span style="font-size:24px;flex-shrink:0;">💡</span>
+    <p style="font-size:13px;color:#444;line-height:1.65;margin:0;">¿Tienes una duda, inquietud o sugerencia? <span style="color:#6B1FA8;font-weight:600;">Comunícate con nosotros por medio de nuestros Canales de Atención al Usuario.</span></p>
+  </div>`;
+}
+
+// ─── HTML: Negocia tus deudas (dentro del reporte panel) ────
+function buildDeudasRpHTML(user, abiertas, cerradas) {
+  return rpSectionHeader('Negocia tus deudas') + `
+  <div style="padding:20px 16px;">
+    <div style="background:#E8F5E9;border-radius:16px;padding:20px;margin-bottom:16px;text-align:center;">
+      <div style="font-size:40px;margin-bottom:10px;">✅</div>
+      <div style="font-size:16px;font-weight:700;color:#2E7D32;margin-bottom:6px;">¡Sin deudas en mora!</div>
+      <div style="font-size:13px;color:#388E3C;line-height:1.5;">Tu historial no presenta obligaciones vencidas. Sigue así.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;">
+      <h4 style="font-size:15px;font-weight:700;color:#111;margin-bottom:4px;">Cómo funciona la negociación</h4>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:14px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="background:#E91E8C;color:#fff;border-radius:50%;width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">1</div>
+          <span style="font-size:13px;color:#555;padding-top:3px;">Busca la deuda que quieres normalizar</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="background:#E91E8C;color:#fff;border-radius:50%;width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">2</div>
+          <span style="font-size:13px;color:#555;padding-top:3px;">Elige el plan de pago que más te convenga</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="background:#E91E8C;color:#fff;border-radius:50%;width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">3</div>
+          <span style="font-size:13px;color:#555;padding-top:3px;">Paga directamente con el aliado y limpia tu historial</span>
+        </div>
+      </div>
+    </div>
+
+    <button style="display:block;width:100%;background:#E91E8C;color:#fff;border:none;border-radius:30px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;">Ponerme al Día YA</button>
+  </div>`;
 }
 
 // ============================================================
