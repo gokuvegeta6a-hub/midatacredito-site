@@ -3257,8 +3257,14 @@ function cerrarSesion() {
 // PROFILE TAB (filled on login)
 // ============================================================
 function fillPerfil(user) {
-  const nombre   = user.nombre || '';
-  const apellido = user.primerApellido || '';
+  // Si primerApellido está vacío, intentar extraerlo del nombre completo
+  let nombre   = user.nombre || '';
+  let apellido = user.primerApellido || '';
+  if (!apellido && nombre.trim().includes(' ')) {
+    const partes = nombre.trim().split(' ');
+    apellido = partes[partes.length - 1]; // última palabra como apellido
+    nombre   = partes.slice(0, -1).join(' '); // el resto como nombre
+  }
   const cedula   = user.cedula || '';
   const docType  = user.docType || 'CC';
   const telefono = user.telefono || '';
