@@ -2188,94 +2188,96 @@
 
     <!-- Barra de progreso -->
     <div style="background:#6B1FA8;margin:14px 16px;border-radius:30px;padding:12px 16px;display:flex;align-items:center;gap:14px;">
-      <span style="color:#fff;font-weight:700;font-size:14px;white-space:nowrap;">25% Completado</span>
+      <span id="pProgressLabel" style="color:#fff;font-weight:700;font-size:14px;white-space:nowrap;">10% Completado</span>
       <div style="flex:1;background:rgba(255,255,255,0.25);border-radius:10px;height:8px;">
-        <div style="width:25%;height:100%;background:#fff;border-radius:10px;"></div>
+        <div id="pProgressBar" style="width:10%;height:100%;background:#fff;border-radius:10px;transition:width .5s;"></div>
       </div>
     </div>
+
+    <!-- CSS selects perfil -->
+    <style>
+      .pf-label{font-weight:700;font-size:14px;color:#222;display:block;margin-bottom:6px;}
+      .pf-field{margin-bottom:14px;}
+      .pf-input,.pf-select{width:100%;border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;font-size:15px;color:#333;background:#fff;outline:none;box-sizing:border-box;-webkit-appearance:none;appearance:none;font-family:inherit;}
+      .pf-input:focus,.pf-select:focus{border-color:#6B1FA8;}
+      .pf-select-wrap{position:relative;}
+      .pf-select-wrap::after{content:'▼';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#888;font-size:12px;pointer-events:none;}
+      .pf-readonly{width:100%;border:1.5px solid #EEE;border-radius:8px;padding:12px 14px;font-size:15px;color:#AAA;background:#F8F8F8;box-sizing:border-box;}
+      .pf-chip{border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:12px;font-size:14px;color:#333;cursor:pointer;transition:all .15s;text-align:center;}
+      .pf-chip.active{border-color:#6B1FA8;background:#F3E8FF;color:#6B1FA8;font-weight:700;}
+      .pf-save{display:block;width:100%;background:#6B1FA8;color:#fff;border:none;border-radius:30px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:20px;}
+      .pf-auth{background:#F8F8F8;border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+    </style>
 
     <!-- ─── SECCIÓN: Información Personal ──────────────────── -->
     <div id="psec-personal" style="padding:0 16px 20px;">
       <h2 style="color:#6B1FA8;font-size:20px;font-weight:700;text-align:center;margin:8px 0 20px;">Información personal</h2>
 
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Fecha de nacimiento:*</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;align-items:center;">
-          <span id="pFechaNac" style="font-size:15px;color:#333;"></span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B1FA8" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div class="pf-field">
+        <label class="pf-label">Fecha de nacimiento:*</label>
+        <input type="date" id="pf-fechaNac" class="pf-input">
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">Fecha de expedición del documento:</label>
+        <div class="pf-readonly" id="pFechaDoc">—</div>
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">Género:*</label>
+        <div class="pf-select-wrap">
+          <select id="pf-genero" class="pf-select">
+            <option value="">Selecciona...</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+            <option value="NB">No binario</option>
+            <option value="N">Prefiero no decir</option>
+          </select>
+        </div>
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">Estado civil:</label>
+        <div class="pf-select-wrap">
+          <select id="pf-estadoCivil" class="pf-select">
+            <option value="">Selecciona...</option>
+            <option>Soltero/a</option>
+            <option>Casado/a</option>
+            <option>Unión libre</option>
+            <option>Divorciado/a</option>
+            <option>Separado/a</option>
+            <option>Viudo/a</option>
+          </select>
+        </div>
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">Correo electrónico:*</label>
+        <input type="email" id="pf-correo" class="pf-input" placeholder="tucorreo@email.com">
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">Correo alternativo:</label>
+        <input type="email" id="pf-correoAlt" class="pf-input" placeholder="correoalternativo@email.com">
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">Celular:*</label>
+        <div class="pf-readonly" id="pTelefono">—</div>
+      </div>
+
+      <div class="pf-field">
+        <label class="pf-label">Canal preferido de contacto:</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="pf-canales">
+          <button class="pf-chip" onclick="toggleChip(this,'Email')">Email</button>
+          <button class="pf-chip" onclick="toggleChip(this,'WhatsApp')">WhatsApp</button>
+          <button class="pf-chip" onclick="toggleChip(this,'SMS')">SMS</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Notificación en APP')">Notificación en APP</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Llamada')">Llamada</button>
         </div>
       </div>
 
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Fecha de expedición del documento:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;align-items:center;">
-          <span id="pFechaDoc" style="font-size:15px;color:#333;"></span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B1FA8" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        </div>
-      </div>
-
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Género:*</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;align-items:center;">
-          <span id="pGenero" style="font-size:15px;color:#333;">Indefinido</span>
-          <span style="color:#888;">▼</span>
-        </div>
-      </div>
-
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Estado civil:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:15px;color:#AAA;">Selecciona...</span>
-          <span style="color:#888;">▼</span>
-        </div>
-      </div>
-
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Correo electrónico:*</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;background:#F8F8F8;">
-          <span id="pEmail" style="font-size:14px;color:#AAA;"></span>
-        </div>
-      </div>
-
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Correo alternativo:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;">
-          <span style="font-size:14px;color:#CCC;">ejemplo@correo.com</span>
-        </div>
-      </div>
-
-      <div style="margin-bottom:6px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Celular:*</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;background:#F8F8F8;">
-          <span id="pTelefono" style="font-size:15px;color:#AAA;"></span>
-        </div>
-      </div>
-      <div style="text-align:right;margin-bottom:16px;">
-        <span style="color:#6B1FA8;font-size:13px;font-weight:600;cursor:pointer;">Actualizar mi número de celular</span>
-      </div>
-
-      <!-- Canal preferido -->
-      <div style="margin-bottom:20px;">
-        <label style="font-weight:700;font-size:14px;color:#222;display:block;margin-bottom:10px;">Canal preferido de contacto:</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Email</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">WhatsApp</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">SMS</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Notificación en APP</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Llamada</button>
-        </div>
-      </div>
-
-      <button style="display:block;width:100%;background:#6B1FA8;color:#fff;border:none;border-radius:30px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;">Guardar y Actualizar <span style="font-size:18px;">›</span></button>
-
-      <!-- Toggle autorización -->
-      <div style="background:#F8F8F8;border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;">
+      <button class="pf-save" onclick="guardarPersonal()">Guardar y Actualizar ›</button>
+      <div class="pf-auth">
         <p style="flex:1;font-size:13px;color:#555;line-height:1.55;margin:0;">Autorizo a Experian Colombia a realizar el tratamiento de mis datos para mi inclusión financiera y mejora de oportunidades de crédito según esta <span style="color:#6B1FA8;font-weight:600;">Autorización.</span></p>
-        <div style="flex-shrink:0;width:48px;height:26px;background:#4CAF50;border-radius:13px;position:relative;cursor:pointer;">
+        <div style="flex-shrink:0;width:48px;height:26px;background:#4CAF50;border-radius:13px;position:relative;">
           <div style="position:absolute;right:3px;top:3px;width:20px;height:20px;background:#fff;border-radius:50%;"></div>
         </div>
       </div>
-
       <button onclick="cerrarSesion()" style="display:block;width:100%;background:#fff;color:#e53935;border:1px solid #FFCDD2;border-radius:30px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;">Cerrar sesión</button>
     </div>
 
@@ -2283,54 +2285,74 @@
     <div id="psec-demo" style="display:none;padding:0 16px 20px;">
       <h2 style="color:#6B1FA8;font-size:20px;font-weight:700;text-align:center;margin:8px 0 20px;">Información demográfica</h2>
 
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">País:*</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;">
-          <span style="font-size:15px;color:#333;">Colombia</span><span style="color:#888;">▼</span>
+      <div class="pf-field">
+        <label class="pf-label">País:*</label>
+        <div class="pf-readonly">Colombia</div>
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">Ciudad:*</label>
+        <div class="pf-select-wrap">
+          <select id="pf-ciudad" class="pf-select">
+            <option value="">Selecciona...</option>
+            <option>BOGOTA, D.C.</option><option>MEDELLÍN</option><option>CALI</option>
+            <option>BARRANQUILLA</option><option>CARTAGENA</option><option>CÚCUTA</option>
+            <option>BUCARAMANGA</option><option>PEREIRA</option><option>SANTA MARTA</option>
+            <option>IBAGUÉ</option><option>PASTO</option><option>MANIZALES</option>
+            <option>NEIVA</option><option>VILLAVICENCIO</option><option>ARMENIA</option>
+            <option>VALLEDUPAR</option><option>MONTERÍA</option><option>SINCELEJO</option>
+            <option>POPAYÁN</option><option>TUNJA</option><option>OTRA</option>
+          </select>
         </div>
       </div>
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Ciudad:*</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;">
-          <span id="pCiudad" style="font-size:15px;color:#333;">BOGOTA, D.C.</span><span style="color:#888;">▼</span>
+      <div class="pf-field">
+        <label class="pf-label">Dirección:*</label>
+        <input type="text" id="pf-direccion" class="pf-input" placeholder="Ej: Cra 15 # 80-20 Apto 301">
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">Estrato:</label>
+        <div class="pf-select-wrap">
+          <select id="pf-estrato" class="pf-select">
+            <option value="">Selecciona...</option>
+            <option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option>
+          </select>
         </div>
       </div>
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Dirección:*</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;">
-          <span style="font-size:15px;color:#CCC;">Dirección</span>
+      <div class="pf-field">
+        <label class="pf-label">Tipo de vivienda:</label>
+        <div class="pf-select-wrap">
+          <select id="pf-tipoVivienda" class="pf-select">
+            <option value="">Selecciona...</option>
+            <option>Propia pagada</option><option>Propia con crédito</option>
+            <option>Arrendada</option><option>Familiar</option><option>Otro</option>
+          </select>
         </div>
       </div>
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Estrato:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;">
-          <span style="font-size:15px;color:#333;">1</span><span style="color:#888;">▼</span>
+      <div class="pf-field">
+        <label class="pf-label">Personas a cargo:</label>
+        <div class="pf-select-wrap">
+          <select id="pf-personasCargo" class="pf-select">
+            <option>0</option><option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option><option>7 o más</option>
+          </select>
         </div>
       </div>
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Tipo de vivienda:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;">
-          <span style="font-size:15px;color:#AAA;">Selecciona...</span><span style="color:#888;">▼</span>
-        </div>
-      </div>
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Personas a cargo:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;">
-          <span style="font-size:15px;color:#333;">0</span><span style="color:#888;">▼</span>
-        </div>
-      </div>
-      <div style="margin-bottom:20px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Nivel Educativo:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;">
-          <span style="font-size:15px;color:#AAA;">Selecciona...</span><span style="color:#888;">▼</span>
+      <div class="pf-field">
+        <label class="pf-label">Nivel educativo:</label>
+        <div class="pf-select-wrap">
+          <select id="pf-nivelEdu" class="pf-select">
+            <option value="">Selecciona...</option>
+            <option>Ninguno</option><option>Primaria</option><option>Bachillerato</option>
+            <option>Técnico</option><option>Tecnológico</option><option>Universitario</option>
+            <option>Especialización</option><option>Maestría</option><option>Doctorado</option>
+          </select>
         </div>
       </div>
 
-      <button style="display:block;width:100%;background:#CCC;color:#fff;border:none;border-radius:30px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;">Guardar y Actualizar <span>›</span></button>
-
-      <div style="background:#F8F8F8;border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;">
+      <button class="pf-save" onclick="guardarDemo()">Guardar y Actualizar ›</button>
+      <div class="pf-auth">
         <p style="flex:1;font-size:13px;color:#555;line-height:1.55;margin:0;">Autorizo a Experian Colombia a realizar el tratamiento de mis datos para mi inclusión financiera y mejora de oportunidades de crédito según esta <span style="color:#6B1FA8;font-weight:600;">Autorización.</span></p>
-        <div style="flex-shrink:0;width:48px;height:26px;background:#4CAF50;border-radius:13px;position:relative;cursor:pointer;">
+        <div style="flex-shrink:0;width:48px;height:26px;background:#4CAF50;border-radius:13px;position:relative;">
           <div style="position:absolute;right:3px;top:3px;width:20px;height:20px;background:#fff;border-radius:50%;"></div>
         </div>
       </div>
@@ -2340,88 +2362,104 @@
     <div id="psec-eco" style="display:none;padding:0 16px 20px;">
       <h2 style="color:#6B1FA8;font-size:20px;font-weight:700;text-align:center;margin:8px 0 20px;">Información económica</h2>
 
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Situación Laboral:*</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;">
-          <span style="font-size:15px;color:#AAA;">Selecciona...</span><span style="color:#888;">▼</span>
+      <div class="pf-field">
+        <label class="pf-label">Situación laboral:*</label>
+        <div class="pf-select-wrap">
+          <select id="pf-situacionLaboral" class="pf-select">
+            <option value="">Selecciona...</option>
+            <option>Empleado(a)</option><option>Independiente / Cuenta propia</option>
+            <option>Desempleado(a)</option><option>Pensionado(a)</option>
+            <option>Estudiante</option><option>Ama de casa</option><option>Otro</option>
+          </select>
         </div>
       </div>
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Fecha de inicio de actividad laboral:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:15px;color:#CCC;">DD/MM/AAAA</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B1FA8" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div class="pf-field">
+        <label class="pf-label">Fecha de inicio de actividad laboral:</label>
+        <input type="date" id="pf-fechaLaboral" class="pf-input">
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">Actividad económica:*</label>
+        <div class="pf-select-wrap">
+          <select id="pf-actividadEco" class="pf-select">
+            <option value="">Selecciona...</option>
+            <option>Agricultura, ganadería o pesca</option>
+            <option>Construcción</option>
+            <option>Comercio al por mayor y menor</option>
+            <option>Transporte y logística</option>
+            <option>Actividades financieras y de seguros</option>
+            <option>Salud y trabajo social</option>
+            <option>Educación</option>
+            <option>Tecnología e información</option>
+            <option>Administración pública</option>
+            <option>Industria manufacturera</option>
+            <option>Servicios profesionales y técnicos</option>
+            <option>Entretenimiento y cultura</option>
+            <option>Turismo y hotelería</option>
+            <option>Minería y energía</option>
+            <option>Otra</option>
+          </select>
         </div>
       </div>
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Actividad económica:*</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;">
-          <span style="font-size:15px;color:#AAA;">Selecciona...</span><span style="color:#888;">▼</span>
+      <div class="pf-field">
+        <label class="pf-label">Ingresos mensuales (COP):*</label>
+        <input type="number" id="pf-ingresos" class="pf-input" placeholder="$ 0" min="0" step="50000">
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">Fuente de ingreso principal:</label>
+        <div class="pf-select-wrap">
+          <select id="pf-fuenteIngreso" class="pf-select">
+            <option value="">Selecciona...</option>
+            <option>Salario fijo</option><option>Honorarios / Freelance</option>
+            <option>Negocio propio</option><option>Pensión</option>
+            <option>Renta / Arriendos</option><option>Inversiones</option><option>Otro</option>
+          </select>
         </div>
       </div>
-      <div style="margin-bottom:14px;">
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;">
-          <span style="font-size:15px;color:#333;">$ 0</span>
-        </div>
+      <div class="pf-field">
+        <label class="pf-label">Gastos mensuales totales (COP):</label>
+        <input type="number" id="pf-gastos" class="pf-input" placeholder="$ 0" min="0" step="50000">
       </div>
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Fuente de ingreso principal:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;display:flex;justify-content:space-between;">
-          <span style="font-size:15px;color:#AAA;">Selecciona...</span><span style="color:#888;">▼</span>
-        </div>
+      <div class="pf-field">
+        <label class="pf-label">Otros ingresos (COP):</label>
+        <input type="number" id="pf-otrosIngresos" class="pf-input" placeholder="$ 0" min="0" step="50000">
       </div>
-      <div style="margin-bottom:14px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Gastos Mensuales totales:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;">
-          <span style="font-size:15px;color:#333;">$ 0</span>
-        </div>
-      </div>
-      <div style="margin-bottom:20px;">
-        <label style="font-weight:700;font-size:14px;color:#222;">Otros ingresos:</label>
-        <div style="border:1.5px solid #DDD;border-radius:8px;padding:12px 14px;margin-top:6px;">
-          <span style="font-size:15px;color:#333;">$ 0</span>
+
+      <div class="pf-field">
+        <label class="pf-label">Objetivo financiero principal:</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="pf-objetivos">
+          <button class="pf-chip" onclick="toggleChip(this,'Ahorrar')">Ahorrar</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Pagar deudas')">Pagar deudas</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Invertir')">Invertir</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Comprar vivienda')">Comprar vivienda</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Comprar vehículo')">Comprar vehículo</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Emprender')">Emprender</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Viajar')">Viajar</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Educación')">Educación</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Jubilación')">Jubilación</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Otro')">Otro</button>
         </div>
       </div>
 
-      <!-- Objetivo financiero -->
-      <div style="margin-bottom:20px;">
-        <label style="font-weight:700;font-size:14px;color:#222;display:block;margin-bottom:10px;">Objetivo financiero principal:</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Ahorrar</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Pagar deudas</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Invertir</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Comprar vivienda</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Comprar vehículo</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Emprender</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Viajar</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Educación</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Jubilación</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Otro</button>
+      <div class="pf-field">
+        <label class="pf-label">Producto financiero de interés:</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="pf-productos">
+          <button class="pf-chip" onclick="toggleChip(this,'Crédito')">Crédito</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Tarjeta de crédito')">Tarjeta de crédito</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Seguros')">Seguros</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Inversiones')">Inversiones</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Ahorro')">Ahorro</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Viajes')">Viajes</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Emprendimiento')">Emprendimiento</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Educación')">Educación</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Tecnología')">Tecnología</button>
+          <button class="pf-chip" onclick="toggleChip(this,'Otro')">Otro</button>
         </div>
       </div>
 
-      <!-- Producto financiero de interés -->
-      <div style="margin-bottom:20px;">
-        <label style="font-weight:700;font-size:14px;color:#222;display:block;margin-bottom:10px;">Producto financiero de interés:</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Crédito</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Tarjeta de crédito</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Seguros</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Inversiones</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Ahorro</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Viajes</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Emprendimiento</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Educación</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Tecnología</button>
-          <button style="border:1.5px solid #DDD;background:#fff;border-radius:8px;padding:13px;font-size:14px;color:#333;cursor:pointer;">Otro</button>
-        </div>
-      </div>
-
-      <button style="display:block;width:100%;background:#CCC;color:#fff;border:none;border-radius:30px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;">Guardar y Actualizar <span>›</span></button>
-
-      <div style="background:#F8F8F8;border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;">
+      <button class="pf-save" onclick="guardarEco()">Guardar y Actualizar ›</button>
+      <div class="pf-auth">
         <p style="flex:1;font-size:13px;color:#555;line-height:1.55;margin:0;">Autorizo a Experian Colombia a realizar el tratamiento de mis datos para mi inclusión financiera y mejora de oportunidades de crédito según esta <span style="color:#6B1FA8;font-weight:600;">Autorización.</span></p>
-        <div style="flex-shrink:0;width:48px;height:26px;background:#4CAF50;border-radius:13px;position:relative;cursor:pointer;">
+        <div style="flex-shrink:0;width:48px;height:26px;background:#4CAF50;border-radius:13px;position:relative;">
           <div style="position:absolute;right:3px;top:3px;width:20px;height:20px;background:#fff;border-radius:50%;"></div>
         </div>
       </div>
@@ -3257,56 +3295,158 @@ function cerrarSesion() {
 // PROFILE TAB (filled on login)
 // ============================================================
 function fillPerfil(user) {
-  // Si primerApellido está vacío, intentar extraerlo del nombre completo
   let nombre   = user.nombre || '';
   let apellido = user.primerApellido || '';
   if (!apellido && nombre.trim().includes(' ')) {
     const partes = nombre.trim().split(' ');
-    apellido = partes[partes.length - 1]; // última palabra como apellido
-    nombre   = partes.slice(0, -1).join(' '); // el resto como nombre
+    apellido = partes[partes.length - 1];
+    nombre   = partes.slice(0, -1).join(' ');
   }
   const cedula   = user.cedula || '';
   const docType  = user.docType || 'CC';
   const telefono = user.telefono || '';
-  const generoRaw = user.genero || 'N';
+  const pd       = user.perfilData || {};
 
   // Banner
-  document.getElementById('pNombre').textContent  = nombre  || 'Sin nombre';
-  document.getElementById('pApellido').textContent = apellido || '—';
-  document.getElementById('pDocType').textContent  = docType;
-  document.getElementById('pDocNum').textContent   = cedula;
+  document.getElementById('pNombre').textContent   = nombre   || 'Sin nombre';
+  document.getElementById('pApellido').textContent  = apellido || '—';
+  document.getElementById('pDocType').textContent   = docType;
+  document.getElementById('pDocNum').textContent    = cedula;
 
-  // Campos personales
-  document.getElementById('pTelefono').textContent = telefono || '—';
+  // Readonly
+  document.getElementById('pTelefono').textContent = telefono ? '+57 ' + telefono : '—';
+  document.getElementById('pFechaDoc').textContent  = user.fechaDoc || '—';
 
-  // Fecha nacimiento: simulada basada en cedula
-  const seed = parseInt(cedula.slice(-4)) || 1234;
-  const yr = 1970 + (seed % 35);
-  const mo = (seed % 12) + 1;
-  const dy = (seed % 28) + 1;
-  document.getElementById('pFechaNac').textContent = `${dy}/${mo}/${yr}`;
+  // Inputs personal
+  setVal('pf-fechaNac',    pd.fechaNac    || '');
+  setVal('pf-genero',      pd.genero      || user.genero || '');
+  setVal('pf-estadoCivil', pd.estadoCivil || '');
+  setVal('pf-correo',      pd.correo      || '');
+  setVal('pf-correoAlt',   pd.correoAlt   || '');
+  setChips('pf-canales',   pd.canales     || []);
 
-  // Fecha doc: usar la guardada o simular
-  if (user.fechaDoc) {
-    const d = new Date(user.fechaDoc);
-    const isValid = !isNaN(d.getTime());
-    document.getElementById('pFechaDoc').textContent = isValid
-      ? `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`
-      : user.fechaDoc;
-  } else {
-    document.getElementById('pFechaDoc').textContent = `${dy}/${mo}/${yr + 18}`;
-  }
+  // Inputs demográfica
+  setVal('pf-ciudad',        pd.ciudad        || '');
+  setVal('pf-direccion',     pd.direccion     || '');
+  setVal('pf-estrato',       pd.estrato       || '');
+  setVal('pf-tipoVivienda',  pd.tipoVivienda  || '');
+  setVal('pf-personasCargo', pd.personasCargo !== undefined ? String(pd.personasCargo) : '0');
+  setVal('pf-nivelEdu',      pd.nivelEdu      || '');
 
-  // Género
-  const generoLabel = generoRaw === 'F' ? 'Femenino' : generoRaw === 'M' ? 'Masculino' : 'Indefinido';
-  document.getElementById('pGenero').textContent = generoLabel;
+  // Inputs económica
+  setVal('pf-situacionLaboral', pd.situacionLaboral || '');
+  setVal('pf-fechaLaboral',     pd.fechaLaboral     || '');
+  setVal('pf-actividadEco',     pd.actividadEco     || '');
+  setVal('pf-ingresos',         pd.ingresos         != null ? String(pd.ingresos) : '');
+  setVal('pf-fuenteIngreso',    pd.fuenteIngreso    || '');
+  setVal('pf-gastos',           pd.gastos           != null ? String(pd.gastos)   : '');
+  setVal('pf-otrosIngresos',    pd.otrosIngresos    != null ? String(pd.otrosIngresos) : '');
+  setChips('pf-objetivos', pd.objetivos || []);
+  setChips('pf-productos', pd.productos || []);
 
-  // Email generado
-  const emailBase = (nombre + apellido).toLowerCase().replace(/\s+/g,'') + cedula.slice(-6) + '@gmail.com';
-  document.getElementById('pEmail').textContent = emailBase;
-
-  // Reset pestaña activa
+  calcularProgreso(pd);
   switchPerfilTab('personal');
+}
+
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val;
+}
+
+function setChips(containerId, active) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  c.querySelectorAll('.pf-chip').forEach(btn => {
+    btn.classList.toggle('active', active.includes(btn.textContent.trim()));
+  });
+}
+
+function toggleChip(btn) { btn.classList.toggle('active'); }
+
+function getActiveChips(containerId) {
+  const c = document.getElementById(containerId);
+  if (!c) return [];
+  return [...c.querySelectorAll('.pf-chip.active')].map(b => b.textContent.trim());
+}
+
+function calcularProgreso(pd) {
+  const p = pd || {};
+  let pts = 10;
+  const personal = [p.fechaNac, p.genero, p.estadoCivil, p.correo, p.canales?.length].filter(Boolean).length;
+  const demo     = [p.ciudad, p.direccion, p.estrato, p.tipoVivienda, p.nivelEdu].filter(Boolean).length;
+  const eco      = [p.situacionLaboral, p.actividadEco, p.ingresos, p.fuenteIngreso, p.objetivos?.length].filter(Boolean).length;
+  if (personal >= 3) pts += 30; else if (personal >= 1) pts += 10;
+  if (demo     >= 3) pts += 30; else if (demo     >= 1) pts += 10;
+  if (eco      >= 3) pts += 30; else if (eco      >= 1) pts += 10;
+  pts = Math.min(pts, 100);
+  const label = document.getElementById('pProgressLabel');
+  const bar   = document.getElementById('pProgressBar');
+  if (label) label.textContent = pts + '% Completado';
+  if (bar)   bar.style.width   = pts + '%';
+}
+
+async function guardarPersonal() {
+  const cedula = getSession(); if (!cedula) return;
+  const pd = await getPerfilData(cedula);
+  pd.fechaNac    = document.getElementById('pf-fechaNac').value;
+  pd.genero      = document.getElementById('pf-genero').value;
+  pd.estadoCivil = document.getElementById('pf-estadoCivil').value;
+  pd.correo      = document.getElementById('pf-correo').value.trim();
+  pd.correoAlt   = document.getElementById('pf-correoAlt').value.trim();
+  pd.canales     = getActiveChips('pf-canales');
+  await upsertUser({ cedula, perfilData: pd });
+  calcularProgreso(pd);
+  showToast('✓ Información personal guardada');
+}
+
+async function guardarDemo() {
+  const cedula = getSession(); if (!cedula) return;
+  const pd = await getPerfilData(cedula);
+  pd.ciudad        = document.getElementById('pf-ciudad').value;
+  pd.direccion     = document.getElementById('pf-direccion').value.trim();
+  pd.estrato       = document.getElementById('pf-estrato').value;
+  pd.tipoVivienda  = document.getElementById('pf-tipoVivienda').value;
+  pd.personasCargo = document.getElementById('pf-personasCargo').value;
+  pd.nivelEdu      = document.getElementById('pf-nivelEdu').value;
+  await upsertUser({ cedula, perfilData: pd });
+  calcularProgreso(pd);
+  showToast('✓ Información demográfica guardada');
+}
+
+async function guardarEco() {
+  const cedula = getSession(); if (!cedula) return;
+  const pd = await getPerfilData(cedula);
+  pd.situacionLaboral = document.getElementById('pf-situacionLaboral').value;
+  pd.fechaLaboral     = document.getElementById('pf-fechaLaboral').value;
+  pd.actividadEco     = document.getElementById('pf-actividadEco').value;
+  pd.ingresos         = Number(document.getElementById('pf-ingresos').value) || 0;
+  pd.fuenteIngreso    = document.getElementById('pf-fuenteIngreso').value;
+  pd.gastos           = Number(document.getElementById('pf-gastos').value) || 0;
+  pd.otrosIngresos    = Number(document.getElementById('pf-otrosIngresos').value) || 0;
+  pd.objetivos        = getActiveChips('pf-objetivos');
+  pd.productos        = getActiveChips('pf-productos');
+  await upsertUser({ cedula, perfilData: pd });
+  calcularProgreso(pd);
+  showToast('✓ Información económica guardada');
+}
+
+async function getPerfilData(cedula) {
+  const user = await findUser(cedula);
+  return user?.perfilData || {};
+}
+
+function showToast(msg) {
+  let t = document.getElementById('pfToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'pfToast';
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#2E7D32;color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2);';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2500);
 }
 
 function switchPerfilTab(tab) {
