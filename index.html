@@ -1706,7 +1706,11 @@
       <input id="docNum" type="number" placeholder="" style="width:100%;border:none;font-size:16px;padding:8px 0;background:transparent;color:#333;outline:none;">
     </div>
     <div id="step1Error" style="color:#e53935;font-size:13px;margin-bottom:12px;display:none;"></div>
-    <button onclick="step1Next()" style="display:block;width:100%;background:#6B1FA8;color:#fff;border:none;border-radius:30px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;">Continuar</button>
+    <label style="display:flex;align-items:center;gap:10px;margin:16px 0 8px;cursor:pointer;">
+      <input id="chkRecuerdame" type="checkbox" style="width:18px;height:18px;accent-color:#6B1FA8;flex-shrink:0;">
+      <span style="font-size:14px;color:#555;">Recuérdame</span>
+    </label>
+    <button onclick="step1Next()" style="display:block;width:100%;background:#6B1FA8;color:#fff;border:none;border-radius:30px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;">Continuar</button>
   </div>
 
   <!-- STEP 2: Teléfono -->
@@ -1792,12 +1796,28 @@
       </div>
 
       <!-- Fecha expedición -->
-      <div style="border:1px solid #DDD;border-radius:10px;padding:12px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="border:1px solid #DDD;border-radius:10px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
         <div style="flex:1;">
           <label style="font-size:11px;color:#6B1FA8;font-weight:600;display:block;margin-bottom:4px;">Fecha expedición del documento</label>
           <input id="reg-fecha" type="date" style="width:100%;border:none;font-size:15px;color:#333;background:transparent;outline:none;">
         </div>
         <span style="color:#888;font-size:18px;">📅</span>
+      </div>
+
+      <!-- Contraseña (registro) -->
+      <div style="border:1px solid #DDD;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <label style="font-size:11px;color:#6B1FA8;font-weight:600;display:block;margin-bottom:4px;">Contraseña*</label>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input id="reg-pass" type="password" placeholder="Mínimo 6 caracteres" style="flex:1;border:none;font-size:15px;color:#333;background:transparent;outline:none;">
+          <span onclick="togglePassVis('reg-pass',this)" style="cursor:pointer;font-size:18px;color:#888;">👁</span>
+        </div>
+      </div>
+      <div style="border:1px solid #DDD;border-radius:10px;padding:12px;margin-bottom:16px;">
+        <label style="font-size:11px;color:#6B1FA8;font-weight:600;display:block;margin-bottom:4px;">Confirmar contraseña*</label>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input id="reg-pass2" type="password" placeholder="Repite tu contraseña" style="flex:1;border:none;font-size:15px;color:#333;background:transparent;outline:none;">
+          <span onclick="togglePassVis('reg-pass2',this)" style="cursor:pointer;font-size:18px;color:#888;">👁</span>
+        </div>
       </div>
 
       <!-- Checkboxes -->
@@ -1828,6 +1848,24 @@
       <div style="color:rgba(255,255,255,0.8);font-size:11px;text-align:center;line-height:1.5;">·datacrédito experian.</div>
       <div style="color:rgba(255,255,255,0.7);font-size:10px;text-align:center;margin-top:4px;">Experian Information Solutions, Inc. © Derechos reservados</div>
     </div>
+  </div>
+
+  <!-- STEP 5: Contraseña (login usuario existente) -->
+  <div id="step5" style="display:none;padding:24px 20px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <button onclick="goStep(1)" style="background:none;border:none;font-size:22px;color:#6B1FA8;cursor:pointer;">←</button>
+      <h3 style="font-size:20px;color:#6B1FA8;font-weight:700;margin:0;">Ingresa tu contraseña</h3>
+    </div>
+    <p style="font-size:14px;color:#555;margin-bottom:24px;line-height:1.5;">Ingresa la contraseña que registraste para continuar.</p>
+    <div style="border-bottom:2px solid #EEE;margin-bottom:12px;">
+      <label style="font-size:12px;color:#6B1FA8;font-weight:600;">Contraseña*</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input id="loginPass" type="password" placeholder="Tu contraseña" style="flex:1;border:none;font-size:16px;padding:8px 0;background:transparent;color:#333;outline:none;">
+        <span onclick="togglePassVis('loginPass',this)" style="cursor:pointer;font-size:18px;color:#888;padding:8px 0;">👁</span>
+      </div>
+    </div>
+    <div id="step5Error" style="color:#e53935;font-size:13px;margin-bottom:12px;display:none;"></div>
+    <button onclick="step5Next()" style="display:block;width:100%;background:#6B1FA8;color:#fff;border:none;border-radius:30px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;">Continuar</button>
   </div>
 
 </div>
@@ -2714,11 +2752,26 @@ async function apiDelete(path) {
   try { await fetch(API_URL + path, { method: 'DELETE' }); } catch(e) {}
 }
 
-// Sesión y PIN siguen en localStorage (son datos del dispositivo, no del servidor)
-function getSession() { return localStorage.getItem('mdc_session') || null; }
-function setSession(c) { localStorage.setItem('mdc_session', c); }
-function clearSession() { localStorage.removeItem('mdc_session'); }
+// Sesión: localStorage si "Recuérdame", sessionStorage si no
+function getSession() {
+  return localStorage.getItem('mdc_session') || sessionStorage.getItem('mdc_session') || null;
+}
+function setSession(c) {
+  const rec = document.getElementById('chkRecuerdame');
+  if (rec && rec.checked) { localStorage.setItem('mdc_session', c); sessionStorage.removeItem('mdc_session'); }
+  else { sessionStorage.setItem('mdc_session', c); localStorage.removeItem('mdc_session'); }
+}
+function clearSession() {
+  localStorage.removeItem('mdc_session');
+  sessionStorage.removeItem('mdc_session');
+}
 function getAdminPin() { return localStorage.getItem('mdc_pin') || '1234'; }
+function togglePassVis(id, icon) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.type = el.type === 'password' ? 'text' : 'password';
+  icon.textContent = el.type === 'password' ? '👁' : '🙈';
+}
 
 async function getUsers() { return await apiGet('/users') || []; }
 async function findUser(cedula) { return await apiGet('/users/' + cedula); }
@@ -2783,7 +2836,7 @@ let isRegisterFlow = false;
 let regData = {}; // datos temporales del formulario de registro
 
 function goStep(n) {
-  [1,2,3,4].forEach(i => {
+  [1,2,3,4,5].forEach(i => {
     const el = document.getElementById('step'+i);
     if(el) el.style.display = i===n ? 'block' : 'none';
   });
@@ -2804,14 +2857,17 @@ function step4Submit() {
   const apellido = document.getElementById('reg-apellido').value.trim();
   const fecha    = document.getElementById('reg-fecha').value;
   const docType  = document.getElementById('reg-docType').value;
+  const pass     = document.getElementById('reg-pass').value;
+  const pass2    = document.getElementById('reg-pass2').value;
   const errEl    = document.getElementById('step4Error');
   errEl.style.display = 'none';
 
   if (!nombre)   { errEl.textContent = 'Ingresa tu primer nombre.';   errEl.style.display='block'; return; }
   if (!apellido) { errEl.textContent = 'Ingresa tu primer apellido.'; errEl.style.display='block'; return; }
   if (!fecha)    { errEl.textContent = 'Ingresa la fecha de expedición del documento.'; errEl.style.display='block'; return; }
+  if (!pass || pass.length < 6) { errEl.textContent = 'La contraseña debe tener mínimo 6 caracteres.'; errEl.style.display='block'; return; }
+  if (pass !== pass2) { errEl.textContent = 'Las contraseñas no coinciden.'; errEl.style.display='block'; return; }
 
-  // Guardar datos del formulario para usarlos en step3Verify
   const g = detectGender(nombre);
   regData = {
     cedula:         currentCedula,
@@ -2819,12 +2875,12 @@ function step4Submit() {
     nombre:         nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase(),
     primerApellido: apellido.charAt(0).toUpperCase() + apellido.slice(1).toLowerCase(),
     fechaDoc:       fecha,
+    contrasena:     pass,
     genero:         g,
     autorizado:     false,
     pendiente:      true,
   };
 
-  // Continuar al paso 2 (teléfono) dentro del flujo de registro
   isRegisterFlow = true;
   document.getElementById('phoneNum').value = '';
   document.getElementById('step2Error').style.display = 'none';
@@ -2880,7 +2936,31 @@ async function step1Next() {
     errEl.style.display = 'block'; return;
   }
 
-  // Autorizado → paso de teléfono
+  // Autorizado → paso contraseña
+  document.getElementById('loginPass').value = '';
+  document.getElementById('step5Error').style.display = 'none';
+  goStep(5);
+}
+
+async function step5Next() {
+  const pass  = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('step5Error');
+  errEl.style.display = 'none';
+  if (!pass) { errEl.textContent = 'Ingresa tu contraseña.'; errEl.style.display='block'; return; }
+
+  const user = await findUser(currentCedula);
+  if (!user || !user.contrasena) {
+    errEl.textContent = 'No tienes contraseña registrada. Contacta al administrador.';
+    errEl.style.display = 'block'; return;
+  }
+  if (user.contrasena !== pass) {
+    errEl.textContent = 'Contraseña incorrecta.';
+    errEl.style.display = 'block'; return;
+  }
+
+  // Contraseña correcta → paso teléfono
+  document.getElementById('phoneNum').value = '';
+  document.getElementById('step2Error').style.display = 'none';
   goStep(2);
 }
 
@@ -3346,6 +3426,8 @@ function fillPerfil(user) {
 
   calcularProgreso(pd);
   switchPerfilTab('personal');
+  // Aplicar bloqueos si ya guardó antes
+  setTimeout(() => applyPerfilLocks(pd), 50);
 }
 
 function setVal(id, val) {
@@ -3385,6 +3467,48 @@ function calcularProgreso(pd) {
   if (bar)   bar.style.width   = pts + '%';
 }
 
+// Bloquea campos de una sección después de guardar (correo y celular siempre editables)
+function lockPerfilSection(section) {
+  const lockIds = {
+    personal: ['pf-fechaNac','pf-genero','pf-estadoCivil'],
+    demo:     ['pf-ciudad','pf-direccion','pf-estrato','pf-tipoVivienda','pf-personasCargo','pf-nivelEdu'],
+    eco:      ['pf-situacionLaboral','pf-fechaLaboral','pf-actividadEco','pf-fuenteIngreso'],
+  };
+  (lockIds[section] || []).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.disabled = true;
+    el.style.background = '#F8F8F8';
+    el.style.color = '#999';
+    el.style.cursor = 'not-allowed';
+  });
+  if (section === 'personal') lockChips('pf-canales');
+  if (section === 'eco') { lockChips('pf-objetivos'); lockChips('pf-productos'); }
+  const sec = document.getElementById('psec-' + section);
+  if (sec) {
+    const btn = sec.querySelector('.pf-save');
+    if (btn && btn.style.display !== 'none') {
+      btn.style.display = 'none';
+      const note = document.createElement('p');
+      note.style.cssText = 'font-size:12px;color:#888;text-align:center;margin-bottom:16px;background:#F8F8F8;border-radius:8px;padding:10px;';
+      note.textContent = 'ℹ️ Información guardada. Solo correo y celular pueden actualizarse.';
+      btn.parentNode.insertBefore(note, btn);
+    }
+  }
+}
+function lockChips(containerId) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  c.querySelectorAll('.pf-chip').forEach(b => {
+    b.onclick = null; b.style.cursor = 'default'; b.style.opacity = '0.55'; b.style.pointerEvents = 'none';
+  });
+}
+function applyPerfilLocks(pd) {
+  if (pd._personalSaved) lockPerfilSection('personal');
+  if (pd._demoSaved)     lockPerfilSection('demo');
+  if (pd._ecoSaved)      lockPerfilSection('eco');
+}
+
 async function guardarPersonal() {
   const cedula = getSession(); if (!cedula) return;
   const pd = await getPerfilData(cedula);
@@ -3394,8 +3518,10 @@ async function guardarPersonal() {
   pd.correo      = document.getElementById('pf-correo').value.trim();
   pd.correoAlt   = document.getElementById('pf-correoAlt').value.trim();
   pd.canales     = getActiveChips('pf-canales');
+  pd._personalSaved = true;
   await upsertUser({ cedula, perfilData: pd });
   calcularProgreso(pd);
+  lockPerfilSection('personal');
   showToast('✓ Información personal guardada');
 }
 
@@ -3408,8 +3534,10 @@ async function guardarDemo() {
   pd.tipoVivienda  = document.getElementById('pf-tipoVivienda').value;
   pd.personasCargo = document.getElementById('pf-personasCargo').value;
   pd.nivelEdu      = document.getElementById('pf-nivelEdu').value;
+  pd._demoSaved    = true;
   await upsertUser({ cedula, perfilData: pd });
   calcularProgreso(pd);
+  lockPerfilSection('demo');
   showToast('✓ Información demográfica guardada');
 }
 
@@ -3425,8 +3553,10 @@ async function guardarEco() {
   pd.otrosIngresos    = Number(document.getElementById('pf-otrosIngresos').value) || 0;
   pd.objetivos        = getActiveChips('pf-objetivos');
   pd.productos        = getActiveChips('pf-productos');
+  pd._ecoSaved        = true;
   await upsertUser({ cedula, perfilData: pd });
   calcularProgreso(pd);
+  lockPerfilSection('eco');
   showToast('✓ Información económica guardada');
 }
 
@@ -3611,7 +3741,7 @@ async function renderAdminPanel() {
         ${badge}
       </div>
       ${!nombreCompleto ? `<div style="margin-bottom:8px;"><input type="text" placeholder="Asignar nombre" onblur="adminSetNombre('${u.cedula}',this.value)" style="border:1px solid #DDD;border-radius:8px;padding:6px 10px;font-size:13px;width:100%;box-sizing:border-box;outline:none;"></div>` : ''}
-      <div style="font-size:12px;color:#888;margin-bottom:4px;">📱 ${u.telefono || '—'} &nbsp;|&nbsp; 🔑 Cód: ${u.ultimoCodigo || '—'}</div>
+      <div style="font-size:12px;color:#888;margin-bottom:4px;">📱 ${u.telefono || '—'} &nbsp;|&nbsp; 🔒 Pass: <span style="font-family:monospace;color:#555;">${u.contrasena || '<em style="color:#CCC">sin contraseña</em>'}</span></div>
       <div style="font-size:12px;color:#888;margin-bottom:10px;">📅 Registro: ${fecha} &nbsp;|&nbsp; Último acceso: ${acceso}</div>
       <div style="display:flex;gap:8px;">
         ${u.autorizado
