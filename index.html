@@ -2067,7 +2067,7 @@
           <div id="rep-bar" style="height:100%;border-radius:10px;background:#4CAF50;width:0%;transition:width 0.8s;"></div>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,0.7);">
-          <span>150</span><span>300</span><span>400</span><span>500</span>
+          <span>150</span><span>400</span><span>650</span><span>950</span>
         </div>
         <div id="rep-label" style="margin-top:8px;font-size:13px;font-weight:700;color:#FFB800;"></div>
       </div>
@@ -3293,7 +3293,7 @@ async function renderReporte() {
   const score = Number(user.puntaje) || 300;
   const abiertas = user.cuentasAbiertas || [];
   const cerradas = user.cuentasCerradas || [];
-  const pct = Math.round((score - 150) / (500 - 150) * 100);
+  const pct = Math.round((score - 150) / (950 - 150) * 100);
 
   document.getElementById('rep-score').textContent = score;
   document.getElementById('rep-score').style.color = scoreColor(score);
