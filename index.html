@@ -1956,19 +1956,22 @@
       <div style="text-align:center;padding-top:8px;">
         <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:12px;">Tu puntaje de crédito</div>
         <!-- SVG Gauge -->
-        <div style="position:relative;display:inline-block;width:200px;height:110px;">
-          <svg width="200" height="110" viewBox="0 0 200 110">
-            <!-- Background arc -->
-            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="16" stroke-linecap="round"/>
-            <!-- Score arc -->
-            <path id="scoreArc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#4CAF50" stroke-width="16" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="251"/>
-            <!-- Score labels -->
-            <text x="16" y="108" fill="rgba(255,255,255,0.6)" font-size="9">150</text>
-            <text x="165" y="108" fill="rgba(255,255,255,0.6)" font-size="9">500</text>
-          </svg>
-          <div style="position:absolute;bottom:0;left:0;right:0;text-align:center;">
-            <div id="dashScore" style="font-size:44px;font-weight:900;color:#fff;line-height:1;">—</div>
-            <div id="dashScoreLabel" style="font-size:12px;font-weight:700;margin-top:2px;color:#FFB800;"></div>
+        <div style="display:inline-block;text-align:center;">
+          <div style="position:relative;display:inline-block;width:200px;height:110px;">
+            <svg width="200" height="110" viewBox="0 0 200 110">
+              <!-- Background arc -->
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="16" stroke-linecap="round"/>
+              <!-- Score arc -->
+              <path id="scoreArc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#4CAF50" stroke-width="16" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="251"/>
+              <!-- Score labels -->
+              <text x="10" y="108" fill="rgba(255,255,255,0.6)" font-size="9">850</text>
+              <text x="163" y="108" fill="rgba(255,255,255,0.6)" font-size="9">910</text>
+            </svg>
+          </div>
+          <!-- Score debajo de la barra -->
+          <div style="margin-top:6px;">
+            <div id="dashScore" style="font-size:52px;font-weight:900;color:#fff;line-height:1;">—</div>
+            <div id="dashScoreLabel" style="font-size:12px;font-weight:700;margin-top:4px;color:#FFB800;"></div>
           </div>
         </div>
         <div id="dashImpacto" style="margin-top:8px;font-size:13px;color:rgba(255,255,255,0.9);"></div>
@@ -3176,8 +3179,8 @@ function randItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function fmtMoney(n) { return '$' + n.toLocaleString('es-CO'); }
 
 function generateUserData(cedula) {
-  // Score 150-500
-  const puntaje = rand(150, 500);
+  // Score 850-910
+  const puntaje = rand(850, 910);
   const nAbiertas = rand(1, 9);
   const nCerradas = rand(0, 8);
 
@@ -3212,24 +3215,24 @@ async function getOrCreateUserData(cedula) {
 // SCORE GAUGE
 // ============================================================
 function scoreColor(s) {
-  if (s < 300) return '#F44336';
-  if (s < 400) return '#FF9800';
+  if (s < 870) return '#FF9800';
+  if (s < 890) return '#8BC34A';
   return '#4CAF50';
 }
 function scoreLabel(s) {
-  if (s < 300) return 'RIESGO ALTO';
-  if (s < 400) return 'RIESGO MEDIO';
+  if (s < 870) return 'RIESGO MEDIO';
+  if (s < 890) return 'BUEN HISTORIAL ✓';
   return 'IMPACTO POSITIVO ✓';
 }
 function scoreImpacto(s) {
-  if (s < 300) return 'Tu historial presenta situaciones que afectan tu vida crediticia.';
-  if (s < 400) return 'Tu historial crediticio está en proceso de mejora.';
-  return 'Tu historial crediticio está en buenas condiciones.';
+  if (s < 870) return 'Tu historial crediticio está en proceso de mejora.';
+  if (s < 890) return 'Tu historial crediticio está en buenas condiciones.';
+  return 'Tu historial crediticio está en excelentes condiciones.';
 }
 
 function animateGauge(score) {
   // SVG arc: total arc length ~251 (semicircle r=80)
-  const pct = (score - 150) / (500 - 150); // 0..1
+  const pct = (score - 850) / (910 - 850); // 0..1
   const arcLen = 251;
   const offset = arcLen - pct * arcLen;
   const color = scoreColor(score);
