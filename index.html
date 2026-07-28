@@ -3738,7 +3738,6 @@ async function renderAdminPanel() {
   document.getElementById('statBlocked').textContent   = blocked.length;
 
   // ── Solicitudes pendientes ──────────────────────────────────
-  const pendList = document.getElementById('adminPendienteList');
   if (!pending.length) {
     pendList.innerHTML = '<p style="color:#888;text-align:center;font-size:13px;">Sin solicitudes pendientes</p>';
   } else {
@@ -3766,7 +3765,6 @@ async function renderAdminPanel() {
   }
 
   // ── Lista de todos los usuarios ─────────────────────────────
-  const list = document.getElementById('adminUserList');
   const registered = users.filter(u => !u.pendiente); // excluir pendientes de la lista principal
   if (!registered.length) { list.innerHTML = '<p style="color:#888;text-align:center;font-size:13px;">No hay usuarios registrados aún.</p>'; return; }
 
