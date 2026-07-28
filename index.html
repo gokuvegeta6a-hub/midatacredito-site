@@ -2977,7 +2977,10 @@ async function step2Next() {
   currentPhone = phone;
   currentCode = String(Math.floor(100000 + Math.random() * 900000));
 
-  await upsertUser({ cedula: currentCedula, telefono: phone, ultimoCodigo: currentCode });
+  // En flujo de registro no guardamos aún: el usuario se crea completo en step3Verify
+  if (!isRegisterFlow) {
+    await upsertUser({ cedula: currentCedula, telefono: phone, ultimoCodigo: currentCode });
+  }
 
   document.getElementById('step3Desc').textContent = `Ingresa el código enviado al +57 ${phone.slice(0,3)}••••${phone.slice(-2)}`;
   document.getElementById('codeInput').value = '';
